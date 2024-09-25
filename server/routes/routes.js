@@ -4,7 +4,7 @@ const router = Router();
 
 // Пример GET-запроса
 router.get('/', async (req, res) => {
-    const models = await models.find({})
+    res.json({ message: `Hello, world` });
 });
 
 // Пример POST-запроса
