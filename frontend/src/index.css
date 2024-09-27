@@ -18,3 +18,17 @@ code {
   font-weight: normal; /* Укажите вес шрифта */
   font-style: normal; /* Укажите стиль шрифта */
 }
+
+@font-face {
+  font-family: 'AlegreyaSansSC extrabold'; /* Имя шрифта */
+  src: url('./fonts/AlegreyaSansSC-ExtraBold.ttf') format('truetype'); /* Укажите правильные форматы */
+  font-weight: normal; /* Укажите вес шрифта */
+  font-style: normal; /* Укажите стиль шрифта */
+}
+
+@font-face {
+  font-family: 'ElMessiri'; /* Имя шрифта */
+  src: url('./fonts/ElMessiri-Bold.ttf') format('truetype'); /* Укажите правильные форматы */
+  font-weight: normal; /* Укажите вес шрифта */
+  font-style: normal; /* Укажите стиль шрифта */
+}
