@@ -1,26 +1,31 @@
 import React from 'react';
+import footer_logo from '../../assets/logo_footer.png'
+import telegram_logo from '../../assets/telegram_logo.svg'
+import vk_logo from '../../assets/vk_logo.svg'
+import viber_logo from '../../assets/viber_logo.svg'
 
 const Footer = () => {
   return (
     <div style={styles.footer}>
       {/* Левая колонка: Логотип */}
       <div style={styles.column}>
-        <img src="/path-to-logo.png" alt="Logo" style={styles.logo} />
+        <img src={footer_logo} alt="Logo" style={styles.logo} />
       </div>
 
       {/* Средняя колонка: Контакты */}
       <div style={styles.column}>
-        <div style={styles.contactItem}>Address: 1234 Street Name</div>
-        <div style={styles.contactItem}>Email: example@email.com</div>
-        <div style={styles.contactItem}>Phone: +123456789</div>
+        <div style={styles.contactItem}>Контакты</div>
+        <div style={styles.contactItem}>88007772424</div>
+        <div style={styles.contactItem}>POCHTA@MAIL.RU</div>
       </div>
 
       {/* Правая колонка: Текст и картинки */}
       <div style={{ ...styles.column, ...styles.info }}>
-        <div style={styles.footerText}>Follow us on social media:</div>
+        <div style={styles.footerText}>Мы в социальных сетях</div>
         <div style={styles.icons}>
-          <img src="/path-to-icon1.png" alt="Icon 1" style={styles.icon} />
-          <img src="/path-to-icon2.png" alt="Icon 2" style={styles.icon} />
+          <img src={viber_logo} alt="Icon 1" style={styles.icon} />
+          <img src={vk_logo} alt="Icon 2" style={styles.icon} />
+          <img src={telegram_logo} alt="Icon 3" style={styles.icon} />
         </div>
       </div>
     </div>
@@ -36,7 +41,6 @@ const styles = {
     justifyContent: 'space-between', // Равномерное распределение колонок
     alignItems: 'flex-start',
     padding: '20px 0',
-    backgroundColor: '#f5f5f5', // Цвет фона
     borderTop: '1px solid #ccc',
   },
   column: {
@@ -44,7 +48,7 @@ const styles = {
     padding: '0 20px',
   },
   logo: {
-    width: '100px',
+    width: '180px',
     height: 'auto',
   },
   contactItem: {
@@ -63,7 +67,7 @@ const styles = {
     gap: '10px', // Разделение между иконками
   },
   icon: {
-    width: '30px', // Размер иконок
+    width: '40px', // Размер иконок
     height: 'auto',
   },
 };
