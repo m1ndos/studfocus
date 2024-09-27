@@ -11,3 +11,10 @@ code {
   font-family: source-code-pro, Menlo, Monaco, Consolas, 'Courier New',
     monospace;
 }
+
+@font-face {
+  font-family: 'AlegreyaSansSC'; /* Имя шрифта */
+  src: url('./fonts/AlegreyaSansSC-Light.ttf') format('truetype'); /* Укажите правильные форматы */
+  font-weight: normal; /* Укажите вес шрифта */
+  font-style: normal; /* Укажите стиль шрифта */
+}
