@@ -1,8 +1,27 @@
-import React from 'react';
+import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
 const SignIn = () => {
   const navigate = useNavigate(); // Используем хук useNavigate
+
+  // Состояния для хранения значений полей логина и пароля
+  const [login, setLogin] = useState('');
+  const [password, setPassword] = useState('');
+
+  // Обработчик сабмита формы
+  const handleSubmit = (e) => {
+    e.preventDefault(); // Предотвращаем перезагрузку страницы
+
+    // Создаем объект User с логином и паролем
+    const user = {
+      login,
+      password,
+    };
+
+    console.log(user); // Выводим объект в консоль для проверки
+
+    // Здесь можно добавить логику для отправки данных на сервер
+  };
 
   const handleSignUpClick = (e) => {
     e.preventDefault(); // Предотвращаем стандартное поведение ссылки
@@ -11,14 +30,24 @@ const SignIn = () => {
 
   return (
     <div style={styles.container}>
-      <form style={styles.form}>
+      <form style={styles.form} onSubmit={handleSubmit}>
         <label style={styles.label}>
           Логин
-          <input type="text" style={styles.input} />
+          <input
+            type="text"
+            style={styles.input}
+            value={login}
+            onChange={(e) => setLogin(e.target.value)} // Обновляем состояние при изменении значения
+          />
         </label>
         <label style={styles.label}>
           Пароль
-          <input type="password" style={styles.input} />
+          <input
+            type="password"
+            style={styles.input}
+            value={password}
+            onChange={(e) => setPassword(e.target.value)} // Обновляем состояние при изменении значения
+          />
         </label>
         <div style={styles.signupText}>
           Нет аккаунта? <a href="/signup" onClick={handleSignUpClick}>Зарегистрироваться</a>
