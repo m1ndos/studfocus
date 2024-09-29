@@ -1,9 +1,11 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom'; // Импортируйте useNavigate
 import logo_header from '../../assets/logo_header.svg';
 import private_office_icon from '../../assets/private_office_icon.svg';
 
 const Header = () => {
-  const [isHovered, setIsHovered] = useState(false); // Состояние для отслеживания наведения
+  const [isHovered, setIsHovered] = useState(false);
+  const navigate = useNavigate(); // Создаем функцию навигации
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -11,6 +13,11 @@ const Header = () => {
 
   const handleMouseLeave = () => {
     setIsHovered(false);
+  };
+
+  // Функция для навигации на страницу Личного кабинета
+  const handlePrivateOfficeClick = () => {
+    navigate('/private-office'); // Перемещаем пользователя на страницу Личного кабинета
   };
 
   return (
@@ -25,11 +32,23 @@ const Header = () => {
         onMouseEnter={handleMouseEnter}
         onMouseLeave={handleMouseLeave}
       >
-        <img src={private_office_icon} style={styles.private_office_icon} alt="Личный кабинет" />
+        <img 
+          src={private_office_icon} 
+          style={styles.private_office_icon} 
+          alt="Личный кабинет" 
+          onClick={handlePrivateOfficeClick} // Добавляем обработчик клика
+        />
         {isHovered && (
           <div style={styles.buttonContainer}>
-            <button style={styles.buttonOffice}>Личный кабинет</button>
-            <button style={styles.buttonSignIn}>Вход</button>
+            <button 
+              style={styles.buttonOffice} 
+              onClick={handlePrivateOfficeClick} // Навигация на Личный кабинет при клике
+            >
+              Личный кабинет
+            </button>
+            <button style={styles.buttonSignIn}>
+              Вход
+            </button>
           </div>
         )} 
       </div>
@@ -76,7 +95,7 @@ const styles = {
     display: 'flex',
     justifyContent: 'flex-end',
     alignItems: 'flex-end',
-    position: 'relative', // Для позиционирования кнопок
+    position: 'relative',
   },
   private_office_icon: {
     width: '50px',
@@ -86,14 +105,14 @@ const styles = {
   },
   buttonContainer: {
     position: 'absolute',
-    bottom: '-49%', // Измените значение, чтобы расположить кнопки ниже
+    bottom: '-49%',
     right: '0',
     display: 'flex',
     flexDirection: 'column',
     alignItems: 'flex-start',
-    zIndex: 1, // Добавляем zIndex, чтобы кнопки были поверх других элементов
+    zIndex: 1,
     backgroundColor: '#F5F5F5',
-    width: '150px'
+    width: '150px',
   },
   buttonOffice: {
     marginLeft: '5px',
@@ -106,7 +125,7 @@ const styles = {
     fontFamily: 'ElMessiri',
     fontSize: '16px',
     transition: 'background-color 0.3s',
-    textDecoration: 'underline'
+    textDecoration: 'underline',
   },
   buttonSignIn: {
     marginLeft: "5px",
@@ -119,8 +138,7 @@ const styles = {
     fontFamily: 'ElMessiri',
     fontSize: '16px',
     transition: 'background-color 0.3s',
-    
-  }
+  },
 };
 
 export default Header;
