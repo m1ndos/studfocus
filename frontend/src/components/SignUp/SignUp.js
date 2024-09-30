@@ -10,7 +10,7 @@ const SignUp = () => {
   const [error, setError] = useState(''); // Состояние для хранения ошибки
 
   // Обработчик сабмита формы
-  const handleSubmit = (event) => {
+  const handleSubmit = async (event) => {
     event.preventDefault(); // Предотвращаем перезагрузку страницы
 
     // Проверка на совпадение паролей
@@ -23,16 +23,40 @@ const SignUp = () => {
 
     // Собираем значения в объект User
     const user = {
-      firstName,
-      lastName,
-      login,
-      password,
+      firstname: firstName,
+      lastname: lastName,
+      login: login,
+      password: password,
     };
 
-    console.log(user); // Для тестирования выводим объект в консоль
+    console.log(user);
+    
+    try {
+      // Отправка POST-запроса на сервер
+      const response = await fetch('http://localhost:4000/api/registration', {
+        method: 'POST', // Метод запроса
+        headers: {
+          'Content-Type': 'application/json', // Указываем, что отправляем JSON
+        },
+        body: JSON.stringify(user), // Преобразуем объект user в строку JSON
+      });
 
-    // Здесь можно отправить объект на сервер или обработать его другим способом
+      // Обработка ответа
+      if (response.ok) {
+        const data = await response.json();
+        console.log('Пользователь успешно зарегистрирован:', data);
+        // Здесь можно сделать перенаправление или другую логику
+      } else {
+        const errorData = await response.json();
+        setError(errorData.message || 'Ошибка при регистрации');
+      }
+    } catch (error) {
+      setError('Сетевая ошибка или сервер недоступен');
+      console.error('Ошибка:', error);
+    }
   };
+
+
 
   return (
     <div style={styles.container}>

@@ -1,40 +1,35 @@
 const { Router } = require('express');
-const models = require('../models/models'); // Импортируем модель
+const User = require('../models/users'); // Импортируем модель
 const router = Router();
 
-// Пример GET-запроса
-router.get('/', async (req, res) => {
-    res.json({ message: 'Hello, world' });
-});
-
-// Пример POST-запроса для добавления данных в MongoDB с ответом об успешности
-router.post('/api/data', async (req, res) => {
+// POST-запрос для регистрации пользователя
+router.post('/api/registration', async (req, res) => {
     try {
-        const { title, completed } = req.body;
-
-        // Проверяем, передан ли обязательный параметр title
-        if (!title) {
-            return res.status(400).json({ message: 'Title is required' });
+        console.log(req.body);
+        // Получаем данные из тела запроса
+        const { firstname, lastname, login, password } = req.body;
+        
+        // Проверка на наличие всех обязательных полей
+        if (!firstname || !lastname || !login || !password) {
+            return res.status(400).json({ message: 'Заполните все поля!' });
         }
 
-        // Создаем новый документ в базе данных
-        const newModel = await models.create({
-            title,
-            completed: completed || false // Если completed не передан, используется значение по умолчанию
+        // Создаем нового пользователя
+        const newUser = new User({
+            firstname,
+            lastname,
+            login,
+            password
         });
 
-        // Возвращаем сообщение об успешной операции и добавленные данные
-        res.status(201).json({ 
-            message: 'Data successfully added', 
-            data: newModel 
-        });
+        // Сохраняем пользователя в базу данных
+        await newUser.save();
+
+        // Отправляем успешный ответ
+        res.status(201).json({ message: 'Пользователь успешно зарегистрирован!' });
     } catch (error) {
-        // Обработка ошибок и отправка сообщения об ошибке
-        console.error('Error creating new model:', error);
-        res.status(500).json({ 
-            message: 'Failed to add data', 
-            error: error.message 
-        });
+        // В случае ошибки отправляем сообщение об ошибке
+        res.status(500).json({ message: 'Ошибка при регистрации пользователя', error: error.message });
     }
 });
 
