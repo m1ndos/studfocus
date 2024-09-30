@@ -1,7 +1,7 @@
-import React, { useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 
-const PrivateOffice = () => {
+const PrivateOffice = ({ userId }) => {
   const navigate = useNavigate(); // Инициализируем хук навигации
 
   // Состояния для хранения значений полей
@@ -9,24 +9,70 @@ const PrivateOffice = () => {
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
 
-  // Состояние для хранения объекта User
-  const [user, setUser] = useState({});
+  useEffect(() => {
+    const fetchUserInfo = () => {
+      // Проверяем, задан ли userId
+      const storedUserId = localStorage.getItem('userId');
+      if (!storedUserId) return;
+
+      fetch('http://localhost:4000/api/user/private-office-info', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify({ userId: storedUserId }), // Передаем userId в запросе
+      })
+        .then(response => {
+          if (!response.ok) {
+            throw new Error('Ошибка при получении данных пользователя');
+          }
+          return response.json();
+        })
+        .then(data => {
+          // Заполняем состояния данными пользователя          
+          setLogin(data.user.login);
+          setFirstName(data.user.firstname);
+          setLastName(data.user.lastname);
+        })
+        .catch(error => {
+          console.error('Ошибка:', error);
+        });
+    };
+
+    fetchUserInfo(); // Вызываем функцию для получения информации о пользователе
+  }, []);
 
   // Обработчик сабмита формы
   const handleSave = (event) => {
     event.preventDefault();
     // Создаем объект User с данными
-    const newUser = {
-      login,
+    const updatedUser = {
+      userId: localStorage.getItem('userId'), // Добавляем userId
       firstName,
       lastName,
     };
 
-    // Сохраняем объект User в состоянии
-    setUser(newUser);
-
-    // Логируем данные
-    console.log('Данные сохранены:', newUser);
+    // Отправляем обновленные данные на сервер
+    fetch('http://localhost:4000/api/user/change-user-info', {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+      },
+      body: JSON.stringify(updatedUser),
+    })
+      .then(response => {
+        if (!response.ok) {
+          throw new Error('Ошибка при обновлении данных пользователя');
+        }
+        return response.json();
+      })
+      .then(data => {
+        console.log('Данные успешно обновлены:', data.message);
+        // Можно добавить логику для обновления состояния, если нужно
+      })
+      .catch(error => {
+        console.error('Ошибка:', error);
+      });
   };
 
   const handleDeleteAccount = () => {
@@ -47,7 +93,6 @@ const PrivateOffice = () => {
             type="text"
             style={styles.inputInactive}
             value={login}
-            onChange={(e) => setLogin(e.target.value)} // Вы можете оставить это, если хотите задать начальное значение
             readOnly // Делаем поле логина неизменяемым
           />
         </label>

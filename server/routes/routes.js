@@ -65,4 +65,62 @@ router.post('/api/user/signin', async (req, res) => {
     }
 });
 
+router.post('/api/user/private-office-info', async (req, res) => {
+    try {
+        const { userId } = req.body; // Получаем userId из тела запроса
+        
+        // Проверка на наличие userId
+        if (!userId) {
+            return res.status(400).json({ message: 'Отсутствует ID пользователя' });
+        }
+        
+        // Ищем пользователя по ID
+        const user = await User.findById(userId);
+        if (!user) {
+            return res.status(404).json({ message: 'Пользователь не найден' });
+        }
+
+        // Отправляем данные пользователя
+        res.status(200).json({
+            message: 'Данные пользователя успешно получены',
+            user: {
+                firstname: user.firstname,
+                lastname: user.lastname,
+                login: user.login
+            }
+        });
+    } catch (error) {
+        res.status(500).json({ message: 'Ошибка при получении данных пользователя', error: error.message });
+    }
+});
+
+// Обработчик POST-запроса для изменения информации о пользователе
+router.post('/api/user/change-user-info', async (req, res) => {
+    try {
+        const { userId, firstName, lastName } = req.body;
+
+        // Проверка на наличие всех обязательных полей
+        if (!userId || !firstName || !lastName) {
+            return res.status(400).json({ message: 'Заполните все поля!' });
+        }
+
+        // Поиск пользователя по userId и обновление имени и фамилии
+        const updatedUser = await User.findByIdAndUpdate(
+            userId,
+            { firstname: firstName, lastname: lastName },
+            { new: true } // Возвращаем обновленного пользователя
+        );
+
+        // Проверка, существует ли пользователь
+        if (!updatedUser) {
+            return res.status(404).json({ message: 'Пользователь не найден!' });
+        }
+
+        res.status(200).json({ message: 'Информация о пользователе успешно обновлена!', user: updatedUser });
+    } catch (error) {
+        res.status(500).json({ message: 'Ошибка при обновлении информации о пользователе', error: error.message });
+    }
+});
+
+
 module.exports = router;
