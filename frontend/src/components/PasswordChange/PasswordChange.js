@@ -4,12 +4,50 @@ const PasswordChange = () => {
   const [currentPassword, setCurrentPassword] = useState('');
   const [newPassword, setNewPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Состояние для ошибок
+  const [successMessage, setSuccessMessage] = useState(''); // Состояние для успешного сообщения
 
   // Обработчик сохранения пароля
-  const handleSave = (event) => {
+  const handleSave = async (event) => {
     event.preventDefault();
-    // Здесь можно добавить логику для проверки и сохранения пароля
-    console.log('Сохранение пароля:', { currentPassword, newPassword, confirmPassword });
+
+    // Сбрасываем сообщения об ошибке и успехе перед отправкой запроса
+    setErrorMessage('');
+    setSuccessMessage('');
+
+    try {
+      // Создаем объект с данными
+      const requestBody = {
+        userId: localStorage.getItem('userId'), // Получаем userId из localStorage
+        currentPassword,
+        newPassword,
+        confirmPassword,
+      };
+
+      // Отправляем POST-запрос на сервер
+      const response = await fetch('http://localhost:4000/api/user/password-change', {
+        method: 'POST',
+        headers: {
+          'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(requestBody), // Преобразуем объект в JSON
+      });
+
+      // Обрабатываем ответ сервера
+      const data = await response.json();
+
+      if (!response.ok) {
+        // Если сервер вернул ошибку, устанавливаем сообщение об ошибке
+        setErrorMessage(data.message || 'Ошибка при смене пароля.');
+      } else {
+        // Если запрос успешен, показываем сообщение об успехе
+        setSuccessMessage('Пароль успешно изменен!');
+      }
+    } catch (error) {
+      // Обработка сетевой ошибки
+      setErrorMessage('Произошла ошибка при смене пароля. Попробуйте снова.');
+      console.error('Ошибка:', error);
+    }
   };
 
   return (
@@ -22,7 +60,7 @@ const PasswordChange = () => {
             style={styles.input}
             value={currentPassword}
             onChange={(e) => setCurrentPassword(e.target.value)}
-            required // Обязательное поле
+            required
           />
         </label>
         <label style={styles.label}>
@@ -32,7 +70,7 @@ const PasswordChange = () => {
             style={styles.input}
             value={newPassword}
             onChange={(e) => setNewPassword(e.target.value)}
-            required // Обязательное поле
+            required
           />
         </label>
         <label style={styles.label}>
@@ -42,9 +80,11 @@ const PasswordChange = () => {
             style={styles.input}
             value={confirmPassword}
             onChange={(e) => setConfirmPassword(e.target.value)}
-            required // Обязательное поле
+            required
           />
         </label>
+        {errorMessage && <div style={styles.errorMessage}>{errorMessage}</div>}
+        {successMessage && <div style={styles.successMessage}>{successMessage}</div>}
         <button type="submit" style={styles.saveButton}>
           Сохранить
         </button>
@@ -91,6 +131,16 @@ const styles = {
     cursor: 'pointer',
     fontFamily: 'ElMessiri',
     fontSize: '16px',
+  },
+  errorMessage: {
+    color: 'red',
+    marginBottom: '20px',
+    fontFamily: 'ElMessiri',
+  },
+  successMessage: {
+    color: 'green',
+    marginBottom: '20px',
+    fontFamily: 'ElMessiri',
   },
 };
 

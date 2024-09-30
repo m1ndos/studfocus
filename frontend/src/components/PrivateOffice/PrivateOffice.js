@@ -8,6 +8,7 @@ const PrivateOffice = ({ userId }) => {
   const [login, setLogin] = useState(''); // Логин, который нельзя изменять
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
+  const [successMessage, setSuccessMessage] = useState(''); // Состояние для успешного сообщения
 
   useEffect(() => {
     const fetchUserInfo = () => {
@@ -45,6 +46,9 @@ const PrivateOffice = ({ userId }) => {
   // Обработчик сабмита формы
   const handleSave = (event) => {
     event.preventDefault();
+    // Сбрасываем сообщение об успехе перед отправкой запроса
+    setSuccessMessage('');
+
     // Создаем объект User с данными
     const updatedUser = {
       userId: localStorage.getItem('userId'), // Добавляем userId
@@ -68,7 +72,8 @@ const PrivateOffice = ({ userId }) => {
       })
       .then(data => {
         console.log('Данные успешно обновлены:', data.message);
-        // Можно добавить логику для обновления состояния, если нужно
+        // Устанавливаем сообщение об успешном изменении данных
+        setSuccessMessage('Данные успешно обновлены!');
       })
       .catch(error => {
         console.error('Ошибка:', error);
@@ -114,6 +119,7 @@ const PrivateOffice = ({ userId }) => {
             onChange={(e) => setLastName(e.target.value)}
           />
         </label>
+        {successMessage && <div style={styles.successMessage}>{successMessage}</div>}
         <div style={styles.buttonContainer}>
           <div style={styles.buttonSaveAndDeleteContainer}>
             <button type="submit" style={styles.saveButton}>
@@ -201,6 +207,11 @@ const styles = {
     cursor: 'pointer',
     fontFamily: 'ElMessiri',
     fontSize: '16px',
+  },
+  successMessage: {
+    color: 'green',
+    marginBottom: '20px',
+    fontFamily: 'ElMessiri',
   },
 };
 

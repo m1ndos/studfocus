@@ -122,5 +122,47 @@ router.post('/api/user/change-user-info', async (req, res) => {
     }
 });
 
+// Маршрут для смены пароля
+router.post('/api/user/password-change', async (req, res) => {
+  const { userId, currentPassword, newPassword, confirmPassword } = req.body;
+
+  try {
+    // Проверка на заполненность полей
+    if (!currentPassword || !newPassword || !confirmPassword) {
+      return res.status(400).json({ message: 'Заполните все поля!' });
+    }
+
+    // Найдем пользователя по ID
+    const user = await User.findById(userId);
+    if (!user) {
+      return res.status(404).json({ message: 'Пользователь не найден!' });
+    }
+
+    // Проверка на совпадение текущего пароля
+    if (user.password !== currentPassword) {
+      return res.status(400).json({ message: 'Неверный текущий пароль!' });
+    }
+
+    // Проверка, что новый пароль и подтверждение совпадают
+    if (newPassword !== confirmPassword) {
+      return res.status(400).json({ message: 'Новый пароль и подтверждение не совпадают!' });
+    }
+
+    // Проверка на то, что новый пароль отличается от текущего
+    if (currentPassword === newPassword) {
+      return res.status(400).json({ message: 'Новый пароль не должен совпадать с текущим паролем!' });
+    }
+
+    // Обновляем пароль пользователя
+    user.password = newPassword;
+    await user.save();
+
+    res.status(200).json({ message: 'Пароль успешно изменен!' });
+  } catch (error) {
+    console.error('Ошибка при смене пароля:', error);
+    res.status(500).json({ message: 'Ошибка сервера при смене пароля', error: error.message });
+  }
+});
+
 
 module.exports = router;

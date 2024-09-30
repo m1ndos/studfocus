@@ -7,6 +7,7 @@ const SignIn = ({ userId, setUserId }) => {
   // Состояния для хранения значений полей логина и пароля
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
+  const [errorMessage, setErrorMessage] = useState(''); // Состояние для ошибки
 
   const handleSubmit = async (e) => {
     e.preventDefault(); // Предотвращаем перезагрузку страницы
@@ -22,33 +23,32 @@ const SignIn = ({ userId, setUserId }) => {
     try {
       // Отправка POST-запроса на сервер
       const response = await fetch('http://localhost:4000/api/user/signin', {
-          method: 'POST', // Метод запроса
-          headers: {
-              'Content-Type': 'application/json', // Указываем, что отправляем JSON
-          },
-          body: JSON.stringify(user), // Преобразуем объект user в строку JSON
+        method: 'POST', // Метод запроса
+        headers: {
+          'Content-Type': 'application/json', // Указываем, что отправляем JSON
+        },
+        body: JSON.stringify(user), // Преобразуем объект user в строку JSON
       });
 
       // Обработка ответа
       if (response.ok) {
-          const data = await response.json();
-          console.log('Вход успешен:', data);
-          
-          // Сохраняем userId в localStorage
-          localStorage.setItem('userId', data.userId);
-          setUserId(data.userId)
+        const data = await response.json();
+        console.log('Вход успешен:', data);
+        
+        // Сохраняем userId в localStorage
+        localStorage.setItem('userId', data.userId);
+        setUserId(data.userId);
+        setErrorMessage(''); // Очищаем сообщение об ошибке при успешном входе
       } else {
-          const errorData = await response.json();
-          console.error('Ошибка при входе:', errorData.message || 'Неизвестная ошибка');
-          // Здесь можно отобразить ошибку пользователю
+        const errorData = await response.json();
+        console.error('Ошибка при входе:', errorData.message || 'Неизвестная ошибка');
+        setErrorMessage(errorData.message || 'Ошибка при входе'); // Устанавливаем сообщение об ошибке
       }
     } catch (error) {
       console.error('Сетевая ошибка или сервер недоступен:', error);
-      // Здесь можно отобразить ошибку пользователю
+      setErrorMessage('Сетевая ошибка или сервер недоступен'); // Устанавливаем сообщение об ошибке
     }
   };
-
-
 
   const handleSignUpClick = (e) => {
     e.preventDefault(); // Предотвращаем стандартное поведение ссылки
@@ -76,6 +76,10 @@ const SignIn = ({ userId, setUserId }) => {
             onChange={(e) => setPassword(e.target.value)} // Обновляем состояние при изменении значения
           />
         </label>
+
+        {/* Отображаем сообщение об ошибке под полем пароля, если ошибка присутствует */}
+        {errorMessage && <div style={styles.error}>{errorMessage}</div>}
+
         <div style={styles.signupText}>
           Нет аккаунта? <a href="/signup" onClick={handleSignUpClick}>Зарегистрироваться</a>
         </div>
@@ -131,6 +135,13 @@ const styles = {
     width: '100%',
     fontFamily: 'ElMessiri',
     fontSize: '15px',
+  },
+  error: {
+    color: 'red',
+    marginTop: '10px',
+    fontFamily: 'ElMessiri',
+    fontSize: '14px',
+    textAlign: 'center',
   },
 };
 
