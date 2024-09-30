@@ -32,3 +32,24 @@ code {
   font-weight: normal; /* Укажите вес шрифта */
   font-style: normal; /* Укажите стиль шрифта */
 }
+
+@font-face {
+  font-family: 'AlegreyaSansSC-Regular'; /* Имя шрифта */
+  src: url('./fonts/AlegreyaSansSC-Regular.ttf') format('truetype'); /* Укажите правильные форматы */
+  font-weight: normal; /* Укажите вес шрифта */
+  font-style: normal; /* Укажите стиль шрифта */
+}
+
+@font-face {
+  font-family: 'AlegreyaSansSC-Medium'; /* Имя шрифта */
+  src: url('./fonts/AlegreyaSansSC-Medium.ttf') format('truetype'); /* Укажите правильные форматы */
+  font-weight: normal; /* Укажите вес шрифта */
+  font-style: normal; /* Укажите стиль шрифта */
+}
+
+@font-face {
+  font-family: 'AlegreyaSansSC-LightItalic'; /* Имя шрифта */
+  src: url('./fonts/AlegreyaSansSC-LightItalic.ttf') format('truetype'); /* Укажите правильные форматы */
+  font-weight: normal; /* Укажите вес шрифта */
+  font-style: normal; /* Укажите стиль шрифта */
+}
