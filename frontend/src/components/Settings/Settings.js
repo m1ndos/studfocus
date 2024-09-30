@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from 'react';
 import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 
-const PrivateOffice = ({ userId }) => {
+const Settings = ({ userId }) => {
   const navigate = useNavigate(); // Инициализируем хук навигации
 
   // Состояния для хранения значений полей
@@ -16,7 +16,7 @@ const PrivateOffice = ({ userId }) => {
       const storedUserId = localStorage.getItem('userId');
       if (!storedUserId) return;
 
-      fetch('http://localhost:4000/api/user/private-office-info', {
+      fetch('http://localhost:4000/api/user/info', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',
@@ -57,7 +57,7 @@ const PrivateOffice = ({ userId }) => {
     };
 
     // Отправляем обновленные данные на сервер
-    fetch('http://localhost:4000/api/user/change-user-info', {
+    fetch('http://localhost:4000/api/user/change-info', {
       method: 'POST',
       headers: {
         'Content-Type': 'application/json',
@@ -215,4 +215,4 @@ const styles = {
   },
 };
 
-export default PrivateOffice;
+export default Settings;

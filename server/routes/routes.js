@@ -65,7 +65,7 @@ router.post('/api/user/signin', async (req, res) => {
     }
 });
 
-router.post('/api/user/private-office-info', async (req, res) => {
+router.post('/api/user/info', async (req, res) => {
     try {
         const { userId } = req.body; // Получаем userId из тела запроса
         
@@ -95,7 +95,7 @@ router.post('/api/user/private-office-info', async (req, res) => {
 });
 
 // Обработчик POST-запроса для изменения информации о пользователе
-router.post('/api/user/change-user-info', async (req, res) => {
+router.post('/api/user/change-info', async (req, res) => {
     try {
         const { userId, firstName, lastName } = req.body;
 
@@ -123,7 +123,7 @@ router.post('/api/user/change-user-info', async (req, res) => {
 });
 
 // Маршрут для смены пароля
-router.post('/api/user/password-change', async (req, res) => {
+router.post('/api/user/change-password', async (req, res) => {
   const { userId, currentPassword, newPassword, confirmPassword } = req.body;
 
   try {

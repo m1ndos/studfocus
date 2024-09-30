@@ -25,7 +25,7 @@ const PasswordChange = () => {
       };
 
       // Отправляем POST-запрос на сервер
-      const response = await fetch('http://localhost:4000/api/user/password-change', {
+      const response = await fetch('http://localhost:4000/api/user/change-password', {
         method: 'POST',
         headers: {
           'Content-Type': 'application/json',

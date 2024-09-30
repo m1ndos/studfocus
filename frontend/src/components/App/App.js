@@ -1,7 +1,7 @@
 import Footer from '../Footer/Footer';
 import Header from '../Header/Header';
 import PasswordChange from '../PasswordChange/PasswordChange';
-import PrivateOffice from '../PrivateOffice/PrivateOffice';
+import Settings from '../Settings/Settings';
 import SignIn from '../SignIn/SignIn';
 import SignUp from '../SignUp/SignUp';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
@@ -25,7 +25,7 @@ function App() {
           <Routes>
             <Route path="/signin" element={<SignIn userId={userId} setUserId={setUserId} />} />
             <Route path="/signup" element={<SignUp />} />
-            <Route path="/private-office" element={<PrivateOffice />} />
+            <Route path="/private-office" element={<Settings/>} />
             <Route path="/password-change" element={<PasswordChange />} />
           </Routes>
         </div>
