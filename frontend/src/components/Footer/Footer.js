@@ -42,7 +42,7 @@ const styles = {
     justifyContent: 'space-between', // Равномерное распределение колонок
     alignItems: 'flex-start',
     padding: '20px 0',
-    borderTop: '1px solid #ccc',
+    borderTop: '2px solid #1058B7',
   },
   column: {
     flex: 1, // Все колонки будут равной ширины
