@@ -19,18 +19,31 @@ function App() {
 
   return (
     <BrowserRouter>
-      <div className="App">
-        <Header userId={userId} setUserId={setUserId}/> {/* Передаем userId в Header */}
-        <Routes>
-          <Route path="/signin" element={<SignIn userId={userId} setUserId={setUserId} />} />
-          <Route path='/signup' element={<SignUp />} />
-          <Route path='/private-office' element={<PrivateOffice />} />
-          <Route path='/password-change' element={<PasswordChange />} />
-        </Routes>
+      <div className="App" style={styles.appContainer}>
+        <Header userId={userId} setUserId={setUserId} /> {/* Передаем userId в Header */}
+        <div style={styles.contentContainer}>
+          <Routes>
+            <Route path="/signin" element={<SignIn userId={userId} setUserId={setUserId} />} />
+            <Route path="/signup" element={<SignUp />} />
+            <Route path="/private-office" element={<PrivateOffice />} />
+            <Route path="/password-change" element={<PasswordChange />} />
+          </Routes>
+        </div>
         <Footer />
       </div>
     </BrowserRouter>
   );
 }
+
+const styles = {
+  appContainer: {
+    display: 'flex',
+    flexDirection: 'column',
+    minHeight: '100vh', // Высота контейнера равна высоте окна браузера
+  },
+  contentContainer: {
+    flex: 1, // Контент растягивается, чтобы занять всё оставшееся пространство
+  },
+};
 
 export default App;
