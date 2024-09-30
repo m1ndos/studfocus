@@ -2,26 +2,37 @@ import React from 'react';
 import comment_icon from '../../assets/comment_icon.svg';
 import views_icon from '../../assets/views_icon.svg';
 
-const Question = () => {
+const Question = ({ params }) => {
+
+  const limit = 400;
+
+  // Функция для обрезки текста
+  const truncateText = (text, limit) => {
+    if (text.length <= limit) return text;
+
+    const truncated = text.slice(0, limit); // Обрезаем текст до лимита
+    const lastSpaceIndex = truncated.lastIndexOf(' '); // Находим последний пробел
+
+    return truncated.slice(0, lastSpaceIndex) + '...'; // Обрезаем до последнего целого слова и добавляем '...'
+  };
+
+  const truncatedText = truncateText(params.text, limit); // Обрезаем текст до 400 символов
+
   return (
     <div style={styles.questionContainer}>
-      <div style={styles.questionTitle}>
-        ЗаголовокЗаголовокЗаголовокЗаголовокЗаголовокЗаголовокЗаголовокЗаголовокЗаголовокЗаголовок Заголовок
-      </div>
-      <p style={styles.questionText}>
-        Ни один из прогнозов востребованности профессий не обходится без упоминания IT-сферы. Компьютеризация, которую мы в нашей стране стали замечать только в начале нулевых, идёт быстрыми темпами – и не собирается останавливаться. Не за горами те дни, когда системы «умного дома» и эффективные распознаватели речи (голосовое управление технологическими устройствами) станут обыденной реальностью – такой же, как лифты, мобильные телефоны, холодильники...
-      </p>
+      <div style={styles.questionTitle}>{params.title}</div>
+      <p style={styles.questionText}>{truncatedText}</p>
       <div style={styles.questionStatistics}>
-        <button style={styles.buttonAutor}>Иванов Д.</button>
+        <button style={styles.buttonAutor}>{params.autor}</button>
         <div style={styles.questionNumbers}>
-          <img src={views_icon} style={styles.questionIconStatistic} />
-          <p style={styles.numbers}>156 876</p>
+          <img src={views_icon} style={styles.questionIconStatistic} alt="views icon" />
+          <p style={styles.numbers}>{params.views}</p>
         </div>
         <div style={styles.questionNumbers}>
-          <img src={comment_icon} style={styles.questionIconStatistic} />
-          <p style={styles.numbers}>698</p>
+          <img src={comment_icon} style={styles.questionIconStatistic} alt="comment icon" />
+          <p style={styles.numbers}>{params.comments}</p>
         </div>
-        <div style={styles.date}>21.09.2024</div> {/* Элемент Дата */}
+        <div style={styles.date}>{params.date}</div>
       </div>
     </div>
   );
@@ -30,6 +41,8 @@ const Question = () => {
 const styles = {
   questionContainer: {
     backgroundColor: '#F5F5F5',
+    marginBottom: '20px',
+    padding: '10px',
   },
   questionTitle: {
     padding: '3% 2% 0 2%',
@@ -78,8 +91,8 @@ const styles = {
   },
   numbers: {
     fontFamily: 'AlegreyaSansSC-LightItalic',
-    fontSize: '19px'
-  }
+    fontSize: '19px',
+  },
 };
 
 export default Question;

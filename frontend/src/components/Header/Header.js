@@ -78,7 +78,7 @@ const styles = {
   },
   logoHeader: {
     cursor: 'pointer',
-    width: '6%',
+    width: '100px',
     marginLeft: '4%',
   },
   textHeader: {
