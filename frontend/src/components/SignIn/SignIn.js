@@ -1,15 +1,14 @@
 import React, { useState } from 'react';
 import { useNavigate } from 'react-router-dom';
 
-const SignIn = () => {
+const SignIn = ({ userId, setUserId }) => {
   const navigate = useNavigate(); // Используем хук useNavigate
 
   // Состояния для хранения значений полей логина и пароля
   const [login, setLogin] = useState('');
   const [password, setPassword] = useState('');
 
-  // Обработчик сабмита формы
-  const handleSubmit = (e) => {
+  const handleSubmit = async (e) => {
     e.preventDefault(); // Предотвращаем перезагрузку страницы
 
     // Создаем объект User с логином и паролем
@@ -20,8 +19,36 @@ const SignIn = () => {
 
     console.log(user); // Выводим объект в консоль для проверки
 
-    // Здесь можно добавить логику для отправки данных на сервер
+    try {
+      // Отправка POST-запроса на сервер
+      const response = await fetch('http://localhost:4000/api/user/signin', {
+          method: 'POST', // Метод запроса
+          headers: {
+              'Content-Type': 'application/json', // Указываем, что отправляем JSON
+          },
+          body: JSON.stringify(user), // Преобразуем объект user в строку JSON
+      });
+
+      // Обработка ответа
+      if (response.ok) {
+          const data = await response.json();
+          console.log('Вход успешен:', data);
+          
+          // Сохраняем userId в localStorage
+          localStorage.setItem('userId', data.userId);
+          setUserId(data.userId)
+      } else {
+          const errorData = await response.json();
+          console.error('Ошибка при входе:', errorData.message || 'Неизвестная ошибка');
+          // Здесь можно отобразить ошибку пользователю
+      }
+    } catch (error) {
+      console.error('Сетевая ошибка или сервер недоступен:', error);
+      // Здесь можно отобразить ошибку пользователю
+    }
   };
+
+
 
   const handleSignUpClick = (e) => {
     e.preventDefault(); // Предотвращаем стандартное поведение ссылки

@@ -33,7 +33,7 @@ const SignUp = () => {
     
     try {
       // Отправка POST-запроса на сервер
-      const response = await fetch('http://localhost:4000/api/registration', {
+      const response = await fetch('http://localhost:4000/api/user/registration', {
         method: 'POST', // Метод запроса
         headers: {
           'Content-Type': 'application/json', // Указываем, что отправляем JSON

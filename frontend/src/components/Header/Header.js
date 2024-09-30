@@ -1,11 +1,11 @@
-import React, { useState } from 'react';
-import { useNavigate } from 'react-router-dom'; // Импортируйте useNavigate
+import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; 
 import logo_header from '../../assets/logo_header.svg';
 import private_office_icon from '../../assets/private_office_icon.svg';
 
-const Header = () => {
+const Header = ({ userId, setUserId }) => { // Принимаем userId как пропс
   const [isHovered, setIsHovered] = useState(false);
-  const navigate = useNavigate(); // Создаем функцию навигации
+  const navigate = useNavigate();
 
   const handleMouseEnter = () => {
     setIsHovered(true);
@@ -15,9 +15,18 @@ const Header = () => {
     setIsHovered(false);
   };
 
-  // Функция для навигации на страницу Личного кабинета
   const handlePrivateOfficeClick = () => {
-    navigate('/private-office'); // Перемещаем пользователя на страницу Личного кабинета
+    navigate('/private-office');
+  };
+
+  const handleAuthButtonClick = () => {
+    if (userId) { // Используем userId напрямую
+      localStorage.removeItem('userId'); // Удаляем userId из localStorage
+      setUserId(null);      
+      navigate('/'); // Перенаправляем на главную страницу
+    } else {
+      navigate('/signin'); // Перенаправляем на страницу входа
+    }
   };
 
   return (
@@ -36,18 +45,21 @@ const Header = () => {
           src={private_office_icon} 
           style={styles.private_office_icon} 
           alt="Личный кабинет" 
-          onClick={handlePrivateOfficeClick} // Добавляем обработчик клика
+          onClick={handlePrivateOfficeClick}
         />
         {isHovered && (
           <div style={styles.buttonContainer}>
             <button 
               style={styles.buttonOffice} 
-              onClick={handlePrivateOfficeClick} // Навигация на Личный кабинет при клике
+              onClick={handlePrivateOfficeClick}
             >
               Личный кабинет
             </button>
-            <button style={styles.buttonSignIn}>
-              Вход
+            <button 
+              style={styles.buttonSignIn} 
+              onClick={handleAuthButtonClick}
+            >
+              {userId ? 'Выход' : 'Вход'} {/* Используем userId для определения текста кнопки */}
             </button>
           </div>
         )} 
