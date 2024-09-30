@@ -72,6 +72,7 @@ const styles = {
     padding: '0.5% 3% 0.5% 3%',
     fontSize: '19px',
     fontFamily: 'AlegreyaSansSC',
+    // eslint-disable-next-line
     border: '2px #CBCBCB solid',
     borderRadius: '10px',
   },

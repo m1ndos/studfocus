@@ -1,4 +1,4 @@
-import React, { useState, useEffect } from 'react';
+import React, { useState} from 'react';
 import { useNavigate } from 'react-router-dom'; 
 import logo_header from '../../assets/logo_header.svg';
 import private_office_icon from '../../assets/private_office_icon.svg';
