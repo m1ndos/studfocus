@@ -1,9 +1,12 @@
 import React, { useState, useEffect } from 'react';
+import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 import Question from '../Reusable/Question';
 
 const PrivateOffice = ({ userId }) => {
   const [questions, setQuestions] = useState([]); // Состояние для хранения вопросов
   const [loading, setLoading] = useState(true); // Состояние для индикатора загрузки
+  const [userInfo, setUserInfo] = useState(null); // Состояние для хранения информации о пользователе
+  const navigate = useNavigate(); // Создаем функцию навигации
 
   useEffect(() => {
     // Функция для отправки POST-запроса к серверу и получения вопросов
@@ -20,8 +23,7 @@ const PrivateOffice = ({ userId }) => {
         const data = await response.json(); // Преобразуем ответ в JSON
 
         if (response.ok) {
-            console.log(data.questions);
-            
+          console.log(data.questions);
           setQuestions(data.questions); // Устанавливаем полученные вопросы в состояние
         } else {
           console.error('Ошибка получения вопросов:', data.message);
@@ -33,8 +35,38 @@ const PrivateOffice = ({ userId }) => {
       }
     };
 
+    // Функция для получения информации о пользователе
+    const fetchUserInfo = async () => {
+      try {
+        const response = await fetch('http://localhost:4000/api/user/info', {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({ userId }), // Передаём userId в теле запроса
+        });
+
+        const data = await response.json();
+
+        if (response.ok) {
+          console.log('Информация о пользователе:', data.user);
+          setUserInfo(data.user); // Устанавливаем информацию о пользователе в состояние
+        } else {
+          console.error('Ошибка получения информации о пользователе:', data.message);
+        }
+      } catch (error) {
+        console.error('Ошибка при выполнении запроса к пользователю:', error);
+      }
+    };
+
     fetchQuestions();
+    fetchUserInfo(); // Получаем информацию о пользователе
   }, [userId]); // Выполняем запрос при изменении userId
+
+  // Обработчик нажатия на кнопку "Настройки профиля"
+  const handleSettingsClick = () => {
+    navigate('/settings'); // Переход на страницу настроек
+  };
 
   if (loading) {
     return <div>Загрузка...</div>; // Отображение во время загрузки
@@ -42,8 +74,16 @@ const PrivateOffice = ({ userId }) => {
 
   return (
     <div style={styles.privateOfficeContainer}>
-      <div style={styles.name}>Алексей Денисов</div>
-      <button style={styles.buttonSettings}>Настройки профиля</button>
+      {userInfo ? (
+        <div style={styles.name}>
+          {userInfo.firstname} {userInfo.lastname} {/* Отображаем имя и фамилию пользователя */}
+        </div>
+      ) : (
+        <div>Загрузка информации о пользователе...</div>
+      )}
+      <button style={styles.buttonSettings} onClick={handleSettingsClick}>
+        Настройки профиля
+      </button>
       <div style={styles.userQuestionsTitle}>МОИ ВОПРОСЫ</div>
       {questions.length ? (
         questions.map((question, index) => (
