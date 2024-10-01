@@ -1,7 +1,9 @@
 const express = require('express');
 const mongoose = require('mongoose');
 const cors = require('cors'); // Импортируем CORS
-const routes = require('./routes/routes');
+const userController = require('./controllers/userController');
+const questionController = require('./controllers/questionController')
+
 const PORT = process.env.PORT || 4000;
 
 const app = express();
@@ -14,7 +16,8 @@ app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 
 // Используем маршруты
-app.use(routes);
+app.use(userController);
+app.use(questionController);
 
 // Функция для подключения к базе данных и запуска сервера
 async function start() {
