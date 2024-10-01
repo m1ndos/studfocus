@@ -28,7 +28,7 @@ function App() {
             <Route path="/signin" element={<SignIn userId={userId} setUserId={setUserId} />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/create-question" element={<CreateQuestion />} />
-            <Route path="/private-office" element={<PrivateOffice />} />
+            <Route path="/private-office" element={<PrivateOffice userId={userId}/>} />
             <Route path="/settings" element={<Settings/>} />
             <Route path="/password-change" element={<PasswordChange />} />
           </Routes>

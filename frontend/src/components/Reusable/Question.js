@@ -2,7 +2,7 @@ import React from 'react';
 import comment_icon from '../../assets/comment_icon.svg';
 import views_icon from '../../assets/views_icon.svg';
 
-const Question = ({ params }) => {
+const Question = ({ question }) => {
 
   const limit = 400;
 
@@ -16,23 +16,23 @@ const Question = ({ params }) => {
     return truncated.slice(0, lastSpaceIndex) + '...'; // Обрезаем до последнего целого слова и добавляем '...'
   };
 
-  const truncatedText = truncateText(params.text, limit); // Обрезаем текст до 400 символов
+  const truncatedText = truncateText(question.text, limit); // Обрезаем текст до 400 символов
 
   return (
     <div style={styles.questionContainer}>
-      <div style={styles.questionTitle}>{params.title}</div>
+      <div style={styles.questionTitle}>{question.title}</div>
       <p style={styles.questionText}>{truncatedText}</p>
       <div style={styles.questionStatistics}>
-        <button style={styles.buttonAutor}>{params.autor}</button>
+        <button style={styles.buttonAutor}>{question.autor}</button>
         <div style={styles.questionNumbers}>
           <img src={views_icon} style={styles.questionIconStatistic} alt="views icon" />
-          <p style={styles.numbers}>{params.views}</p>
+          <p style={styles.numbers}>{question.views_count}</p>
         </div>
         <div style={styles.questionNumbers}>
           <img src={comment_icon} style={styles.questionIconStatistic} alt="comment icon" />
-          <p style={styles.numbers}>{params.comments}</p>
+          <p style={styles.numbers}>{question.comments_count}</p>
         </div>
-        <div style={styles.date}>{params.date}</div>
+        <div style={styles.date}>{question.date}</div>
       </div>
     </div>
   );
