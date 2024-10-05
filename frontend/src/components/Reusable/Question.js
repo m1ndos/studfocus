@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import comment_icon from '../../assets/comment_icon.svg';
 import views_icon from '../../assets/views_icon.svg';
 
-const Question = ({ question }) => {
+const Question = ({ question, onClick }) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Состояние для модального окна
   const [modalImageUrl, setModalImageUrl] = useState(null); // URL изображения для модального окна
 
@@ -48,7 +48,7 @@ const Question = ({ question }) => {
         <p style={styles.questionText}>{truncatedText}</p>
       </div>
       <div style={styles.questionStatistics}>
-        <button style={styles.buttonAutor}>{question.autor}</button>
+        <button style={styles.buttonAutor} onClick={onClick}>{question.autor}</button>
         <div style={styles.questionNumbers}>
           <img src={views_icon} style={styles.questionIconStatistic} alt="views icon" />
           <p style={styles.numbers}>{question.views_count}</p>

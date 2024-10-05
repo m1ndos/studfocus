@@ -100,8 +100,49 @@ router.get('/api/question/image/:id', async (req, res) => {
     }
 });
 
-module.exports = router;
+// Обработчик для получения вопроса по его id
+router.post('/api/question/get-by-id', async (req, res) => {
+    try {
+        const { id } = req.body; // Получаем id из тела запроса
 
+        // Находим вопрос по id
+        const question = await Question.findById(id);
+
+        if (!question) {
+            return res.status(404).json({ message: 'Question not found' });
+        }
+
+        // Получаем user_id из вопроса
+        const userId = question.user_id;
+
+        // Находим пользователя по user_id
+        const user = await User.findById(userId);
+
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
+        // Форматируем дату для отображения
+        const formattedDate = new Date(question.date).toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric'
+        });
+
+        // Если есть изображение, добавляем ссылку на него
+        const questionWithImage = {
+            ...question.toObject(),
+            imageUrl: question.image ? `http://localhost:4000/api/question/image/${question._id}` : null,
+            date: formattedDate,
+            autor: `${user.firstname} ${user.lastname}`, // Добавляем имя и фамилию автора
+        };
+
+        res.status(200).json({ question: questionWithImage }); // Возвращаем вопрос с отформатированной датой, ссылкой на изображение и автором
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving question', error });
+    }
+});
 
 
 module.exports = router;

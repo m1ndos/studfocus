@@ -8,6 +8,7 @@ import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { useEffect, useState } from 'react'; // Импортируем useEffect и useState
 import PrivateOffice from '../PrivateOffice/PrivateOffice';
 import CreateQuestion from '../CreateQuestion/CreateQuestion';
+import QuestionPage from '../Question/QuestionPage';
 
 function App() {
   const [userId, setUserId] = useState(null); // Состояние для хранения userId
@@ -31,6 +32,7 @@ function App() {
             <Route path="/private-office" element={<PrivateOffice userId={userId}/>} />
             <Route path="/settings" element={<Settings/>} />
             <Route path="/password-change" element={<PasswordChange />} />
+            <Route path="/question/:id" element={<QuestionPage />}></Route>
           </Routes>
         </div>
         <Footer />

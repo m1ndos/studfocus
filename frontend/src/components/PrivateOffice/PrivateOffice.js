@@ -68,6 +68,11 @@ const PrivateOffice = ({ userId }) => {
     navigate('/settings'); // Переход на страницу настроек
   };
 
+  // Обработчик для перехода на страницу конкретного вопроса
+  const handleQuestionClick = (id) => {
+    navigate(`/question/${id}`); // Навигация на страницу вопроса с его id
+  };
+
   if (loading) {
     return <div>Загрузка...</div>; // Отображение во время загрузки
   }
@@ -87,7 +92,7 @@ const PrivateOffice = ({ userId }) => {
       <div style={styles.userQuestionsTitle}>МОИ ВОПРОСЫ</div>
       {questions.length ? (
         questions.map((question, index) => (
-          <Question key={index} question={question} />
+          <Question key={index} question={question} onClick={() => handleQuestionClick(question._id)} />
         ))
       ) : (
         <div>У вас нет вопросов.</div>
