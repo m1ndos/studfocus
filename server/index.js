@@ -3,6 +3,7 @@ const mongoose = require('mongoose');
 const cors = require('cors'); // Импортируем CORS
 const userController = require('./controllers/userController');
 const questionController = require('./controllers/questionController')
+const commentController = require("./controllers/commentController")
 
 const PORT = process.env.PORT || 4000;
 
@@ -18,6 +19,7 @@ app.use(express.urlencoded({ extended: true }));
 // Используем маршруты
 app.use(userController);
 app.use(questionController);
+app.use(commentController);
 
 // Функция для подключения к базе данных и запуска сервера
 async function start() {
