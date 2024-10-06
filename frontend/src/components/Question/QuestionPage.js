@@ -5,7 +5,7 @@ import Comment from '../Reusable/Comment';
 import clip_icon from '../../assets/clip_icon.svg';
 import send_icon from '../../assets/send_icon.svg';
 
-const QuestionPage = () => {
+const QuestionPage = ({ userId }) => {
   const { id } = useParams();
   const [question, setQuestion] = useState(null);
   const [comments, setComments] = useState([]);
@@ -44,7 +44,7 @@ const QuestionPage = () => {
       if (response.ok) {
         setComments(data.comments);
       } else {
-        setError(data.message);
+        
       }
     } catch (err) {
       setError('Ошибка при получении комментариев');
@@ -81,7 +81,9 @@ const QuestionPage = () => {
     e.preventDefault(); // Prevent default form submission
 
     const formData = new FormData();
-    formData.append('comment_text', textareaRef.current.value);
+    formData.append('text', textareaRef.current.value);
+    formData.append('question_id', id);
+    formData.append('user_id', userId);
     if (imageUrl) {
       const response = await fetch(imageUrl);
       const blob = await response.blob();
@@ -118,19 +120,26 @@ const QuestionPage = () => {
 
   return (
     <div style={styles.questionPageContainer}>
-      {question && <Question question={question} />}
-      <div style={styles.commentsContainer}>
-        <h2>Комментарии</h2>
-        {comments.length ? (
-          comments.map((comment) => <Comment key={comment._id} comment={comment} />)
-        ) : (
-          <p>Комментариев пока нет.</p>
-        )}
-      </div>
+      {/* Вопрос всегда отображается, даже если нет комментариев */}
+      {question ? (
+        <>
+          <Question question={question} />
+          <div style={styles.commentsContainer}>
+            <h2>Комментарии</h2>
+            {comments.length ? (
+              comments.map((comment) => <Comment key={comment._id} comment={comment} />)
+            ) : (
+              <p>Комментариев пока нет.</p>
+            )}
+          </div>
+        </>
+      ) : (
+        <p>Вопрос не найден.</p>
+      )}
+
       <form style={styles.form} onSubmit={handleCommentSubmit}>
         <label>
           <div style={styles.divInput}>
-            
             <textarea
               ref={textareaRef}
               style={styles.textarea}

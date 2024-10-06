@@ -11,7 +11,7 @@ const upload = multer({ storage });
 // Обработчик POST-запроса для создания вопроса
 router.post('/api/question/create', upload.single('image'), async (req, res) => {
     try {
-        console.log("111");
+        console.log(req.body);
         
         const { user_id, title, text } = req.body;
         const image = req.file ? req.file.buffer : null; // Сохраняем файл в виде Buffer

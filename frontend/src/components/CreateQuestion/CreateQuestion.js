@@ -55,6 +55,8 @@ const CreateQuestion = () => {
         const response = await fetch(imageUrl); // Получаем изображение из URL
         const blob = await response.blob(); // Преобразуем его в Blob
         formData.append('image', blob, 'uploaded_image'); // Добавляем изображение
+        console.log(formData);
+        
     }
 
     try {

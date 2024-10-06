@@ -32,7 +32,7 @@ function App() {
             <Route path="/private-office" element={<PrivateOffice userId={userId}/>} />
             <Route path="/settings" element={<Settings/>} />
             <Route path="/password-change" element={<PasswordChange />} />
-            <Route path="/question/:id" element={<QuestionPage />}></Route>
+            <Route path="/question/:id" element={<QuestionPage userId={userId}/>}></Route>
           </Routes>
         </div>
         <Footer />

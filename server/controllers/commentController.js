@@ -15,6 +15,12 @@ router.post('/api/comment/create', upload.single('image'), async (req, res) => {
         const { user_id, question_id, text } = req.body; // Получаем данные из запроса
         const image = req.file ? req.file.buffer : null; // Если есть файл, сохраняем его как buffer
         
+        // Находим пользователя по user_id, чтобы получить имя и фамилию
+        const user = await User.findById(user_id).select('firstname lastname');
+        if (!user) {
+            return res.status(404).json({ message: 'User not found' });
+        }
+
         // Создаем новый комментарий
         const newComment = new Comment({
             user_id,
@@ -28,17 +34,34 @@ router.post('/api/comment/create', upload.single('image'), async (req, res) => {
         // Сохраняем комментарий в базу данных
         await newComment.save();
 
-        // Обновляем вопрос, добавляя ID комментария в массив комментариев
+        // Обновляем вопрос: добавляем ID комментария и увеличиваем счетчик комментариев
         await Question.findByIdAndUpdate(question_id, {
-            $push: { comments: newComment._id } // Добавляем ID комментария в массив comments вопроса
+            $push: { comments: newComment._id }, // Добавляем ID комментария в массив comments вопроса
+            $inc: { comments_count: 1 } // Увеличиваем comments_count на 1
         });
 
-        res.status(201).json({ message: 'Comment added successfully!', comment: newComment });
+        // Форматируем дату как день.месяц.год
+        const formattedDate = new Date(newComment.date).toLocaleDateString('ru-RU', {
+            day: '2-digit',
+            month: '2-digit',
+            year: 'numeric',
+        });
+
+        // Добавляем поле autor с именем и фамилией пользователя
+        const responseComment = {
+            ...newComment.toObject(), // Преобразуем документ в объект
+            autor: `${user.firstname} ${user.lastname}`, // Имя и фамилия пользователя
+            date: formattedDate, // Форматированная дата
+            imageUrl: newComment.image ? `http://localhost:4000/api/comment/image/${newComment._id}` : null, // Ссылка на изображение
+        };
+
+        res.status(201).json({ message: 'Comment added successfully!', comment: responseComment });
     } catch (error) {
         console.error('Error adding comment:', error);
         res.status(500).json({ message: 'Error adding comment', error });
     }
 });
+
 
 // Обработчик для получения всех комментариев по question_id
 router.post('/api/comment/get-by-question-id', async (req, res) => {
@@ -69,10 +92,11 @@ router.post('/api/comment/get-by-question-id', async (req, res) => {
                 ...comment.toObject(),
                 autor: user ? `${user.firstname} ${user.lastname}` : 'Unknown Author', // Добавляем имя и фамилию автора или 'Unknown Author' если пользователь не найден
                 date: formattedDate, // Добавляем отформатированную дату
+                imageUrl: comment.image ? `http://localhost:4000/api/comment/image/${comment._id}` : null, // Ссылка на изображение
             };
         }));
 
-        res.status(200).json({ comments: commentsWithAuthor }); // Отправляем комментарии с автором и отформатированной датой
+        res.status(200).json({ comments: commentsWithAuthor }); // Отправляем комментарии с автором, изображением и отформатированной датой
     } catch (error) {
         console.error('Error retrieving comments:', error);
         res.status(500).json({ message: 'Error retrieving comments', error });
@@ -80,6 +104,25 @@ router.post('/api/comment/get-by-question-id', async (req, res) => {
 });
 
 
+// Обработчик для получения изображения по id комментария
+router.get('/api/comment/image/:id', async (req, res) => {
+    try {
+        const { id } = req.params; // Получаем ID комментария из параметров
 
+        // Находим комментарий по ID
+        const comment = await Comment.findById(id);
+
+        if (!comment || !comment.image) {
+            return res.status(404).json({ message: 'Image not found' });
+        }
+
+        // Отправляем изображение
+        res.set('Content-Type', 'image/png'); // Устанавливаем тип контента, предполагая, что изображение в формате PNG
+        res.send(comment.image); // Отправляем изображение как бинарные данные
+    } catch (error) {
+        console.error('Error retrieving image:', error);
+        res.status(500).json({ message: 'Error retrieving image', error });
+    }
+});
 
 module.exports = router;
