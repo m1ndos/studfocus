@@ -4,6 +4,7 @@ import PasswordChange from '../PasswordChange/PasswordChange';
 import Settings from '../Settings/Settings';
 import SignIn from '../SignIn/SignIn';
 import SignUp from '../SignUp/SignUp';
+import Main from '../Main/Main';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { useEffect, useState } from 'react'; // Импортируем useEffect и useState
 import PrivateOffice from '../PrivateOffice/PrivateOffice';
@@ -26,6 +27,7 @@ function App() {
         <Header userId={userId} setUserId={setUserId} /> {/* Передаем userId в Header */}
         <div style={styles.contentContainer}>
           <Routes>
+          <Route path="/" element={<Main />} />
             <Route path="/signin" element={<SignIn userId={userId} setUserId={setUserId} />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/create-question" element={<CreateQuestion />} />

@@ -53,3 +53,10 @@ code {
   font-weight: normal; /* Укажите вес шрифта */
   font-style: normal; /* Укажите стиль шрифта */
 }
+
+@font-face {
+  font-family: 'ElMessiri-Medium'; /* Имя шрифта */
+  src: url('./fonts/ElMessiri-Medium.ttf') format('truetype'); /* Укажите правильные форматы */
+  font-weight: normal; /* Укажите вес шрифта */
+  font-style: normal; /* Укажите стиль шрифта */
+}
