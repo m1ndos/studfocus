@@ -19,6 +19,10 @@ const Header = ({ userId, setUserId }) => { // Принимаем userId как 
     navigate('/private-office');
   };
 
+  const handleLogoClick = () => {
+    navigate('/')
+  }
+
   const handleAuthButtonClick = () => {
     if (userId) { // Используем userId напрямую
       localStorage.removeItem('userId'); // Удаляем userId из localStorage
@@ -31,7 +35,7 @@ const Header = ({ userId, setUserId }) => { // Принимаем userId как 
 
   return (
     <div style={styles.header}>
-      <img src={logo_header} style={styles.logoHeader} alt="Logo" />
+      <img src={logo_header} style={styles.logoHeader} alt="Logo" onClick={handleLogoClick}/>
       <div style={styles.textHeader}>
         <div style={styles.studfocus}>СТУДФОКУС</div>
         <div style={styles.otherText}>платформа, для тех, кто строит образовательное будущее</div>

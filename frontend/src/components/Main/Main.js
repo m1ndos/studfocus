@@ -1,11 +1,19 @@
 import React from 'react'
 import search_icon from '../../assets/search_icon.svg'
+import { useNavigate } from 'react-router-dom'; 
 
 const Main = () => {
+
+    const navigate = useNavigate();
+
+    const handleCreateQuestionClick = () => {
+        navigate('/create-question')
+    }
+
   return (
     <div>
         <div style={styles.divCreateQuestion}>
-            <button style={styles.btnCreateQuestion}>Задать вопрос</button>
+            <button style={styles.btnCreateQuestion} onClick={handleCreateQuestionClick}>Задать вопрос</button>
         </div>
         <div style={styles.divSearch}>
             <div style={styles.search}>
