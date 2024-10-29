@@ -1,11 +1,11 @@
 const { Router } = require('express');
 const multer = require('multer');
-const Question = require('../models/questions'); // Импортируем модель
+const Question = require('../models/questions');
 const User = require("../models/users")
 const router = Router();
 
 // Настройка multer для обработки файлов
-const storage = multer.memoryStorage(); // Хранит файл в памяти
+const storage = multer.memoryStorage();
 const upload = multer({ storage });
 
 // Обработчик POST-запроса для создания вопроса
@@ -36,7 +36,7 @@ router.post('/api/question/create', upload.single('image'), async (req, res) => 
 
 router.post('/api/question/get-by-user-id', async (req, res) => {
     try {
-        const { user_id } = req.body; // Предполагаем, что user_id передается в теле запроса как строка
+        const { user_id } = req.body;
         console.log('user_id from request:', user_id);
         
         // Находим все вопросы, созданные данным пользователем

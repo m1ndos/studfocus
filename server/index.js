@@ -1,6 +1,6 @@
 const express = require('express');
 const mongoose = require('mongoose');
-const cors = require('cors'); // Импортируем CORS
+const cors = require('cors');
 const userController = require('./controllers/userController');
 const questionController = require('./controllers/questionController')
 const commentController = require("./controllers/commentController")
@@ -10,9 +10,8 @@ const PORT = process.env.PORT || 4000;
 const app = express();
 
 // Используем CORS для разрешения запросов с других доменов
-app.use(cors()); // Добавляем CORS перед маршрутами
+app.use(cors()); 
 
-// Middleware для парсинга JSON
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 

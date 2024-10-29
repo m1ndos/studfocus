@@ -1,18 +1,18 @@
 const { Router } = require('express');
 const multer = require('multer');
 const router = Router();
-const Question = require('../models/questions'); // Импортируем модель вопросов
-const Comment = require('../models/comments');  // Импортируем модель комментариев
+const Question = require('../models/questions'); 
+const Comment = require('../models/comments');  
 const User = require('../models/users')
 
 // Настройка multer для обработки файлов
-const storage = multer.memoryStorage(); // Хранит файл в памяти
+const storage = multer.memoryStorage(); 
 const upload = multer({ storage });
 
 // Обработчик для создания комментария
 router.post('/api/comment/create', upload.single('image'), async (req, res) => {
     try {
-        const { user_id, question_id, text } = req.body; // Получаем данные из запроса
+        const { user_id, question_id, text } = req.body;
         const image = req.file ? req.file.buffer : null; // Если есть файл, сохраняем его как buffer
         
         // Находим пользователя по user_id, чтобы получить имя и фамилию
@@ -26,7 +26,7 @@ router.post('/api/comment/create', upload.single('image'), async (req, res) => {
             user_id,
             question_id,
             text,
-            likes_count: 0, // Изначально количество лайков 0
+            likes_count: 0,
             image,
             date: Date.now(),
         });
@@ -66,7 +66,7 @@ router.post('/api/comment/create', upload.single('image'), async (req, res) => {
 // Обработчик для получения всех комментариев по question_id
 router.post('/api/comment/get-by-question-id', async (req, res) => {
     try {
-        const { question_id } = req.body; // Получаем question_id из тела запроса
+        const { question_id } = req.body; 
 
         // Находим все комментарии для данного вопроса
         const comments = await Comment.find({ question_id });
@@ -107,7 +107,7 @@ router.post('/api/comment/get-by-question-id', async (req, res) => {
 // Обработчик для получения изображения по id комментария
 router.get('/api/comment/image/:id', async (req, res) => {
     try {
-        const { id } = req.params; // Получаем ID комментария из параметров
+        const { id } = req.params;
 
         // Находим комментарий по ID
         const comment = await Comment.findById(id);

@@ -22,8 +22,8 @@ const schema = new Schema({
         required: false
     },
     date: {
-        type: Date, // Тип данных для date
-        default: Date.now, // Устанавливает текущее время по умолчанию
+        type: Date,
+        default: Date.now, 
         required: true
     }
 });

@@ -1,5 +1,5 @@
 const { Router } = require('express');
-const User = require('../models/users'); // Импортируем модель
+const User = require('../models/users');
 const router = Router();
 
 // POST-запрос для регистрации пользователя
@@ -25,10 +25,9 @@ router.post('/api/user/registration', async (req, res) => {
             firstname,
             lastname,
             login,
-            password // Сохраняем пароль в открытом виде (небезопасно)
+            password
         });
 
-        // Сохраняем пользователя в базу данных
         await newUser.save();
 
         res.status(201).json({ message: 'Пользователь успешно зарегистрирован!' });
