@@ -2,7 +2,7 @@ import React, { useState } from 'react';
 import comment_icon from '../../assets/comment_icon.svg';
 import views_icon from '../../assets/views_icon.svg';
 
-const Question = ({ question, onClick, views_count }) => {
+const Question = ({ question, onClick}) => {
   const [isModalOpen, setIsModalOpen] = useState(false); // Состояние для модального окна
   const [modalImageUrl, setModalImageUrl] = useState(null); // URL изображения для модального окна
 

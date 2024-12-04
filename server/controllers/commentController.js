@@ -62,6 +62,35 @@ router.post('/api/comment/create', upload.single('image'), async (req, res) => {
     }
 });
 
+// Обработчик для удаления комментария
+router.post('/api/comment/delete', async (req, res) => {
+    try {
+        const { comment_id } = req.body;
+
+        // Найти комментарий
+        const comment = await Comment.findById(comment_id);
+        if (!comment) {
+            return res.status(404).json({ message: 'Comment not found' });
+        }
+
+        const { question_id } = comment;
+
+        // Удалить комментарий
+        await Comment.findByIdAndDelete(comment_id);
+
+        // Обновить вопрос: удалить ID комментария из массива comments и уменьшить счетчик комментариев
+        await Question.findByIdAndUpdate(question_id, {
+            $pull: { comments: comment_id }, // Удаляем ID комментария из массива
+            $inc: { comments_count: -1 }    // Уменьшаем comments_count на 1
+        });
+
+        res.status(200).json({ message: 'Comment deleted successfully' });
+    } catch (error) {
+        console.error('Error deleting comment:', error);
+        res.status(500).json({ message: 'Error deleting comment', error });
+    }
+});
+
 
 // Обработчик для получения всех комментариев по question_id
 router.post('/api/comment/get-by-question-id', async (req, res) => {

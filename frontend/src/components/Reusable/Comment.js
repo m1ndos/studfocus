@@ -1,12 +1,14 @@
 import React, { useState, useEffect } from 'react';
 import like_icon from '../../assets/like_icon.svg';
-import liked_icon from '../../assets/liked_icon.svg'
+import liked_icon from '../../assets/liked_icon.svg';
 
 const Comment = ({ comment }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
   const [modalImageUrl, setModalImageUrl] = useState(null);
   const [isLiked, setIsLiked] = useState(false);
-  const [likesCount, setLikesCount] = useState(comment.likes_count); // Локальное состояние для количества лайков
+  const [isMyComment, setIsMyComment] = useState(false);
+  const [likesCount, setLikesCount] = useState(comment.likes_count);
+  const [isDeleted, setIsDeleted] = useState(false);
 
   const fetchCheckLike = async () => {
     try {
@@ -34,8 +36,7 @@ const Comment = ({ comment }) => {
         body: JSON.stringify({ comment_id: comment._id, user_id: localStorage.getItem("userId") }),
       });
       if (response.ok) {
-        console.log("лайкнулось");
-        setLikesCount((prev) => prev + 1); // Увеличиваем количество лайков
+        setLikesCount((prev) => prev + 1);
       } else {
         const data = await response.json();
         console.log(data.error);
@@ -53,14 +54,54 @@ const Comment = ({ comment }) => {
         body: JSON.stringify({ comment_id: comment._id, user_id: localStorage.getItem("userId") }),
       });
       if (response.ok) {
-        console.log("лайк убран");
-        setLikesCount((prev) => prev - 1); // Уменьшаем количество лайков
+        setLikesCount((prev) => prev - 1);
       } else {
         const data = await response.json();
         console.log(data.error);
       }
     } catch (err) {
       console.error(err);
+    }
+  };
+
+  const fetchCommentDelete = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/comment/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment_id: comment._id}),
+      });
+      if (response.ok) {
+        console.log("комментарий удалён");
+      } else {
+        const data = await response.json();
+        console.log(data.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleDelete = async () => {
+    const confirmDelete = window.confirm("Вы уверены, что хотите удалить этот комментарий?");
+    if (confirmDelete) {
+      try {
+        const response = await fetch('http://localhost:4000/api/comment/delete', {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ comment_id: comment._id }),
+        });
+  
+        if (response.ok) {
+          console.log("Комментарий удалён");
+          setIsDeleted(true); // Устанавливаем флаг удаления
+        } else {
+          const data = await response.json();
+          console.error(data.error);
+        }
+      } catch (err) {
+        console.error(err);
+      }
     }
   };
 
@@ -74,6 +115,7 @@ const Comment = ({ comment }) => {
   };
 
   useEffect(() => {
+    setIsMyComment(localStorage.getItem("userId") === comment.user_id);
     fetchCheckLike();
   }, []);
 
@@ -86,6 +128,10 @@ const Comment = ({ comment }) => {
     setIsModalOpen(false);
     setModalImageUrl(null);
   };
+
+  if (isDeleted) {
+    return null;
+  }
 
   return (
     <div style={styles.commentContainer}>
@@ -112,6 +158,12 @@ const Comment = ({ comment }) => {
         <p style={styles.likeCount}>{likesCount}</p>
       </div>
 
+      {isMyComment && (
+        <button style={styles.deleteButton} onClick={handleDelete}>
+          Удалить комментарий
+        </button>
+      )}
+
       {isModalOpen && (
         <div style={styles.modalOverlay} onClick={closeModal}>
           <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
@@ -126,45 +178,53 @@ const Comment = ({ comment }) => {
   );
 };
 
-
 const styles = {
   commentContainer: {
     backgroundColor: '#F5F5F5',
-    padding: '2% 2% 0% 2%',
-    marginTop: '1%'
+    padding: '2% 2% 2% 2%',
+    marginTop: '1%',
   },
   autor: {
     color: '#1058B7',
     fontSize: '23px',
     fontFamily: 'AlegreyaSansSC-Regular',
-    textShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)'
+    textShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)',
   },
   date: {
     fontSize: '23px',
     fontFamily: 'AlegreyaSansSC',
-    textShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)'
+    textShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)',
   },
   text: {
     paddingTop: '1%',
     fontSize: '23px',
     fontFamily: 'AlegreyaSansSC',
-    textShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)'
+    textShadow: '0px 3px 5px rgba(0, 0, 0, 0.2)',
   },
   divLikes: {
     display: 'flex',
-    gap: '5px'
+    gap: '5px',
   },
   likeIcon: {
-    width: '25px'
+    width: '25px',
   },
   likeCount: {
     fontFamily: 'AlegreyaSansSC-LightItalic',
-    fontSize: '20px'
+    fontSize: '20px',
   },
   img: {
     width: '400px',
     marginTop: '1%',
-    cursor: 'pointer' // Добавляем указатель при наведении
+    cursor: 'pointer',
+  },
+  deleteButton: {
+    backgroundColor: '#FF4C4C',
+    color: '#fff',
+    border: 'none',
+    padding: '10px',
+    borderRadius: '5px',
+    cursor: 'pointer',
+    marginTop: '10px',
   },
   modalOverlay: {
     position: 'fixed',

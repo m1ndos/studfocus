@@ -76,8 +76,51 @@ router.post('/api/question/get-by-user-id', async (req, res) => {
     }
 });
 
+// Обработчик для получения всех вопросов
+router.get('/api/questions', async (req, res) => {
+    try {
+        // Извлекаем все вопросы из базы данных
+        const questions = await Question.find();
 
+        if (!questions.length) {
+            return res.status(404).json({ message: 'No questions found' });
+        }
 
+        // Для каждого вопроса добавляем информацию о пользователе (авторе) и форматируем дату
+        const questionsWithAuthor = await Promise.all(
+            questions.map(async (question) => {
+                // Находим пользователя по user_id
+                const user = await User.findById(question.user_id);
+                if (!user) {
+                    return null; // Если пользователь не найден, пропускаем вопрос
+                }
+
+                // Форматируем дату
+                const formattedDate = new Date(question.date).toLocaleDateString('ru-RU', {
+                    day: '2-digit',
+                    month: '2-digit',
+                    year: 'numeric',
+                });
+
+                // Возвращаем вопрос с дополнительной информацией
+                return {
+                    ...question.toObject(),
+                    autor: `${user.firstname} ${user.lastname}`, // Добавляем имя и фамилию автора
+                    imageUrl: question.image ? `http://localhost:4000/api/question/image/${question._id}` : null, // Если есть изображение, добавляем ссылку на него
+                    date: formattedDate, // Добавляем отформатированную дату
+                };
+            })
+        );
+
+        // Отфильтровываем вопросы, для которых не удалось найти пользователя
+        const validQuestions = questionsWithAuthor.filter(Boolean);
+
+        res.status(200).json({ questions: validQuestions }); // Возвращаем вопросы
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving questions', error });
+    }
+});
 
 // Обработчик для получения изображения по идентификатору вопроса
 router.get('/api/question/image/:id', async (req, res) => {

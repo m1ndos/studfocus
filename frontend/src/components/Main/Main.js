@@ -1,14 +1,52 @@
-import React from 'react'
+import React, { useState, useEffect } from 'react'
 import search_icon from '../../assets/search_icon.svg'
 import { useNavigate } from 'react-router-dom'; 
+import Question from '../Reusable/Question'; // Импортируем компонент Question
 
 const Main = () => {
 
+    const [questions, setQuestions] = useState([]);
     const navigate = useNavigate();
+
+    const fetchAllQuestions = async () => {
+        try {
+            const response = await fetch('http://localhost:4000/api/questions', {
+                method: 'GET',
+            });
+
+            const data = await response.json();
+
+            if (response.ok) {
+                // После получения вопросов, рассчитываем коэффициент популярности
+                const questionsWithPopularity = data.questions.map(question => ({
+                    ...question,
+                    popularityScore: question.views_count * 0.1 + question.comments_count * 0.2, // Рассчитываем популярность
+                }));
+                // Сортируем вопросы по популярности от большего к меньшему
+                const sortedQuestions = questionsWithPopularity.sort((a, b) => b.popularityScore - a.popularityScore);
+
+                // Обновляем состояние с отсортированными вопросами
+                setQuestions(sortedQuestions);
+            } else {
+                console.log('Ошибка:', data.message);
+            }
+        } catch (error) {
+            console.error('Ошибка:', error);
+        }
+    };
+
+    useEffect(() => {
+        fetchAllQuestions();
+    }, [])
 
     const handleCreateQuestionClick = () => {
         navigate('/create-question')
     }
+
+    // Обработчик для перехода на страницу конкретного вопроса
+    const handleQuestionClick = (id) => {
+        navigate(`/question/${id}`); // Навигация на страницу вопроса с его id
+    };
 
   return (
     <div>
@@ -27,7 +65,13 @@ const Main = () => {
         <div style={styles.divTextFamousQuestions}>
             <p style={styles.pTextFamousQuestions}>ПОПУЛЯРНЫЕ ВОПРОСЫ</p>
         </div>
-        
+
+        {/* Рендеринг списка вопросов */}
+        <div style={styles.questionsList}>
+            {questions.map((question) => (
+                <Question key={question._id} question={question} onClick={() => handleQuestionClick(question._id)} />
+            ))}
+        </div>
     </div>
   )
 }
@@ -93,7 +137,11 @@ const styles = {
     },
     pTextFamousQuestions: {
         margin: '2%'
+    },
+    questionsList: {
+        padding: '2% 10% 2% 10%'
+        
     }
 }
 
-export default Main
+export default Main;
