@@ -4,6 +4,7 @@ import Question from '../Reusable/Question';
 import Comment from '../Reusable/Comment';
 import clip_icon from '../../assets/clip_icon.svg';
 import send_icon from '../../assets/send_icon.svg';
+import { useNavigate } from 'react-router-dom'; 
 
 const QuestionPage = ({ userId }) => {
   const { id } = useParams();
@@ -15,6 +16,7 @@ const QuestionPage = ({ userId }) => {
   const [imageUrl, setImageUrl] = useState(null); // State for image URL
   const textareaRef = useRef(null); // Ref for textarea
   const fileInputRef = useRef(null); // Ref for file input
+  const navigate = useNavigate();
 
   const fetchQuestion = async () => {
     try {
@@ -151,6 +153,10 @@ const QuestionPage = ({ userId }) => {
     }
   };
 
+  const goToAutor = () => {
+    navigate("/profile/" + question.user_id)
+  }
+
   if (loading) {
     return <div>Загрузка...</div>;
   }
@@ -164,7 +170,7 @@ const QuestionPage = ({ userId }) => {
       {/* Вопрос всегда отображается, даже если нет комментариев */}
       {question ? (
         <>
-          <Question question={question} views_count={viewsCount} />
+          <Question question={question} views_count={viewsCount} onClick={goToAutor} />
           <div style={styles.commentsContainer}>
             <h2>Комментарии</h2>
             {comments.length ? (
@@ -178,31 +184,34 @@ const QuestionPage = ({ userId }) => {
         <p>Вопрос не найден.</p>
       )}
 
-      <form style={styles.form} onSubmit={handleCommentSubmit}>
-        <label>
-          <div style={styles.divInput}>
-            <textarea
-              ref={textareaRef}
-              style={styles.textarea}
-              onInput={handleInput}
-              placeholder="Напишите комментарий..."
-            ></textarea>
+      {userId && (
+        <form style={styles.form} onSubmit={handleCommentSubmit}>
+          <label>
+            <div style={styles.divInput}>
+              <textarea
+                ref={textareaRef}
+                style={styles.textarea}
+                onInput={handleInput}
+                placeholder="Напишите комментарий..."
+              ></textarea>
+            </div>
+          </label>
+          <div style={styles.divMessageIcons}>
+            <input
+              type="file"
+              ref={fileInputRef}
+              style={{ display: 'none' }}
+              accept="image/*"
+              onChange={handleFileChange}
+            />
+            {/* Render the uploaded image here */}
+            {imageUrl && <img src={imageUrl} alt='uploaded' style={styles.uploadedImage} />}
+            <img src={clip_icon} alt='clip_icon' style={styles.messageIcons} onClick={handleIconClick} />
+            <img src={send_icon} alt='send_icon' style={styles.messageIcons} onClick={handleCommentSubmit} />
           </div>
-        </label>
-        <div style={styles.divMessageIcons}>
-          <input
-            type="file"
-            ref={fileInputRef}
-            style={{ display: 'none' }}
-            accept="image/*"
-            onChange={handleFileChange}
-          />
-          {/* Render the uploaded image here */}
-          {imageUrl && <img src={imageUrl} alt='uploaded' style={styles.uploadedImage} />}
-          <img src={clip_icon} alt='clip_icon' style={styles.messageIcons} onClick={handleIconClick} />
-          <img src={send_icon} alt='send_icon' style={styles.messageIcons} onClick={handleCommentSubmit} />
-        </div>
-      </form>
+        </form>
+      )}
+      
     </div>
   );
 };

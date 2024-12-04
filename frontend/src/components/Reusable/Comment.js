@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from 'react';
 import like_icon from '../../assets/like_icon.svg';
 import liked_icon from '../../assets/liked_icon.svg';
+import { useNavigate } from 'react-router-dom'; 
 
 const Comment = ({ comment }) => {
   const [isModalOpen, setIsModalOpen] = useState(false);
@@ -9,6 +10,7 @@ const Comment = ({ comment }) => {
   const [isMyComment, setIsMyComment] = useState(false);
   const [likesCount, setLikesCount] = useState(comment.likes_count);
   const [isDeleted, setIsDeleted] = useState(false);
+  const navigate = useNavigate();
 
   const fetchCheckLike = async () => {
     try {
@@ -106,12 +108,16 @@ const Comment = ({ comment }) => {
   };
 
   const handleLike = () => {
-    if (isLiked) {
-      fetchLikeDelete();
-    } else {
-      fetchLikeCreate();
+    if(localStorage.getItem("userId")){
+      if (isLiked) {
+        fetchLikeDelete();
+      } else {
+        fetchLikeCreate();
+      }
+      setIsLiked(!isLiked);
+    }else{
+      navigate("/signin")
     }
-    setIsLiked(!isLiked);
   };
 
   useEffect(() => {
@@ -207,6 +213,7 @@ const styles = {
   },
   likeIcon: {
     width: '25px',
+    cursor: 'pointer'
   },
   likeCount: {
     fontFamily: 'AlegreyaSansSC-LightItalic',

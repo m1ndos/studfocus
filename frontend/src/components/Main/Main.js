@@ -40,7 +40,12 @@ const Main = () => {
     }, [])
 
     const handleCreateQuestionClick = () => {
-        navigate('/create-question')
+        if(localStorage.getItem("userId")){
+            navigate('/create-question')
+        }else{
+            navigate("/signin")
+        }
+        
     }
 
     // Обработчик для перехода на страницу конкретного вопроса
