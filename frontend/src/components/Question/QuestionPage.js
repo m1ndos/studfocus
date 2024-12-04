@@ -8,6 +8,7 @@ import send_icon from '../../assets/send_icon.svg';
 const QuestionPage = ({ userId }) => {
   const { id } = useParams();
   const [question, setQuestion] = useState(null);
+  const [viewsCount, setViewsCount] = useState(0);
   const [comments, setComments] = useState([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(null);
@@ -51,9 +52,49 @@ const QuestionPage = ({ userId }) => {
     }
   };
 
+  const fetchCountViews = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/view/count', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question_id: id }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setViewsCount(data.count);
+      } else {
+        
+      }
+    } catch (err) {
+      setError('Ошибка при получении комментариев');
+    }
+  };
+
+  const fetchReviewQuestion = async () => {
+    console.log(localStorage.getItem("userId"));
+    
+    try {
+      const response = await fetch('http://localhost:4000/api/view/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ question_id: id, user_id: localStorage.getItem("userId")}),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        console.log("просмотр засчитан");
+      } else {
+        console.log(data.error);
+      }
+    } catch (err) {
+      setError('Ошибка при получении комментариев');
+    }
+  };
+
   useEffect(() => {
     fetchQuestion();
     fetchComments();
+    fetchCountViews();
+    fetchReviewQuestion()
     setLoading(false);
   }, [id]);
 
@@ -123,7 +164,7 @@ const QuestionPage = ({ userId }) => {
       {/* Вопрос всегда отображается, даже если нет комментариев */}
       {question ? (
         <>
-          <Question question={question} />
+          <Question question={question} views_count={viewsCount} />
           <div style={styles.commentsContainer}>
             <h2>Комментарии</h2>
             {comments.length ? (

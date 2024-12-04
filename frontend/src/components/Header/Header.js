@@ -16,7 +16,8 @@ const Header = ({ userId, setUserId }) => { // Принимаем userId как 
   };
 
   const handlePrivateOfficeClick = () => {
-    navigate('/private-office');
+    if(localStorage.getItem('userId')!=null) navigate('/private-office');
+    else navigate("/signin")
   };
 
   const handleLogoClick = () => {

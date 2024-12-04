@@ -38,6 +38,7 @@ const SignIn = ({ userId, setUserId }) => {
         // Сохраняем userId в localStorage
         localStorage.setItem('userId', data.userId);
         setUserId(data.userId);
+        navigate("/private-office")
         setErrorMessage(''); // Очищаем сообщение об ошибке при успешном входе
       } else {
         const errorData = await response.json();

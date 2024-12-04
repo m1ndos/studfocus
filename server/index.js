@@ -4,6 +4,8 @@ const cors = require('cors');
 const userController = require('./controllers/userController');
 const questionController = require('./controllers/questionController')
 const commentController = require("./controllers/commentController")
+const viewsController = require("./controllers/viewsController")
+const likesController = require("./controllers/likesController")
 
 const PORT = process.env.PORT || 4000;
 
@@ -19,6 +21,8 @@ app.use(express.urlencoded({ extended: true }));
 app.use(userController);
 app.use(questionController);
 app.use(commentController);
+app.use(viewsController);
+app.use(likesController)
 
 // Функция для подключения к базе данных и запуска сервера
 async function start() {
