@@ -56,4 +56,61 @@ router.post('/api/like/create', async (req, res) => {
     }
 });
 
+// POST запрос для проверки лайка
+router.post('/api/like/check', async (req, res) => {
+    const { user_id, comment_id } = req.body; // Извлекаем данные из тела запроса
+
+    // Проверяем, что все обязательные поля присутствуют
+    if (!user_id || !comment_id) {
+        return res.status(400).json({ error: 'user_id and comment_id are required' });
+    }
+
+    try {
+        // Проверяем, существует ли лайк с данным user_id и comment_id
+        const existingLike = await Like.findOne({ user_id, comment_id });
+
+        // Возвращаем true, если лайк найден, иначе false
+        res.status(200).json({ liked: !!existingLike });
+    } catch (error) {
+        console.error(error); // Логируем ошибку
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+// POST запрос для удаления лайка
+router.post('/api/like/delete', async (req, res) => {
+    const { user_id, comment_id } = req.body; // Извлекаем данные из тела запроса
+
+    // Проверяем, что все обязательные поля присутствуют
+    if (!user_id || !comment_id) {
+        return res.status(400).json({ error: 'user_id and comment_id are required' });
+    }
+
+    try {
+        // Проверяем, существует ли лайк с данным user_id и comment_id
+        const existingLike = await Like.findOne({ user_id, comment_id });
+        if (!existingLike) {
+            return res.status(404).json({ error: 'Like not found' });
+        }
+
+        // Удаляем лайк из базы данных
+        await Like.deleteOne({ _id: existingLike._id });
+
+        // Уменьшаем счетчик лайков в комментарии
+        await Comment.findByIdAndUpdate(
+            comment_id,
+            { $inc: { likes_count: -1 } }, // Уменьшаем поле likes_count на 1
+            { new: true } // Возвращаем обновленный документ (необязательно)
+        );
+
+        // Возвращаем успешный ответ
+        res.status(200).json({ message: 'Like removed successfully' });
+    } catch (error) {
+        console.error(error); // Логируем ошибку
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
+
 module.exports = router;

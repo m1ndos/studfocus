@@ -1,14 +1,19 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom'; // Импортируем useNavigate
 import Question from '../Reusable/Question';
+import { useParams } from 'react-router-dom';
 
-const PrivateOffice = ({ userId }) => {
+const Profile = ({ userId }) => {
+  const { id } = useParams();
   const [questions, setQuestions] = useState([]); // Состояние для хранения вопросов
+  const [isMyProfile, setIsMyProfile] = useState(false);
   const [loading, setLoading] = useState(true); // Состояние для индикатора загрузки
   const [userInfo, setUserInfo] = useState(null); // Состояние для хранения информации о пользователе
   const navigate = useNavigate(); // Создаем функцию навигации
 
   useEffect(() => {
+    id == localStorage.getItem("userId")? setIsMyProfile(true) : setIsMyProfile(false);
+    console.log(id == localStorage.getItem("userId"));
     // Функция для отправки POST-запроса к серверу и получения вопросов
     const fetchQuestions = async () => {
       try {
@@ -17,7 +22,7 @@ const PrivateOffice = ({ userId }) => {
           headers: {
             'Content-Type': 'application/json', // Задаём тип контента
           },
-          body: JSON.stringify({ user_id: userId }), // Передаём userId в теле запроса
+          body: JSON.stringify({ user_id: id }), // Передаём userId в теле запроса
         });
 
         const data = await response.json(); // Преобразуем ответ в JSON
@@ -43,7 +48,7 @@ const PrivateOffice = ({ userId }) => {
           headers: {
             'Content-Type': 'application/json',
           },
-          body: JSON.stringify({ userId }), // Передаём userId в теле запроса
+          body: JSON.stringify({ userId: id }), // Передаём userId в теле запроса
         });
 
         const data = await response.json();
@@ -61,7 +66,7 @@ const PrivateOffice = ({ userId }) => {
 
     fetchQuestions();
     fetchUserInfo(); // Получаем информацию о пользователе
-  }, [userId]); // Выполняем запрос при изменении userId
+  }, [id]); // Выполняем запрос при изменении userId
 
   // Обработчик нажатия на кнопку "Настройки профиля"
   const handleSettingsClick = () => {
@@ -86,10 +91,12 @@ const PrivateOffice = ({ userId }) => {
       ) : (
         <div>Загрузка информации о пользователе...</div>
       )}
-      <button style={styles.buttonSettings} onClick={handleSettingsClick}>
-        Настройки профиля
-      </button>
-      <div style={styles.userQuestionsTitle}>МОИ ВОПРОСЫ</div>
+      {isMyProfile && (
+        <button style={styles.buttonSettings} onClick={handleSettingsClick}>
+          Настройки профиля
+        </button>
+      )}
+      <div style={styles.userQuestionsTitle}>{isMyProfile? "МОИ ВОПРОСЫ" : "ВОПРОСЫ ПОЛЬЗОВАТЕЛЯ"}</div>
       {questions.length ? (
         questions.map((question, index) => (
           <Question key={index} question={question} onClick={() => handleQuestionClick(question._id)} />
@@ -133,4 +140,4 @@ const styles = {
   },
 };
 
-export default PrivateOffice;
+export default Profile;

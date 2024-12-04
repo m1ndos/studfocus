@@ -1,17 +1,87 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
 import like_icon from '../../assets/like_icon.svg';
+import liked_icon from '../../assets/liked_icon.svg'
 
 const Comment = ({ comment }) => {
-  const [isModalOpen, setIsModalOpen] = useState(false); // Состояние для модального окна
-  const [modalImageUrl, setModalImageUrl] = useState(null); // URL изображения для модального окна
+  const [isModalOpen, setIsModalOpen] = useState(false);
+  const [modalImageUrl, setModalImageUrl] = useState(null);
+  const [isLiked, setIsLiked] = useState(false);
+  const [likesCount, setLikesCount] = useState(comment.likes_count); // Локальное состояние для количества лайков
 
-  // Открыть модальное окно с изображением
+  const fetchCheckLike = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/like/check', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment_id: comment._id, user_id: localStorage.getItem("userId") }),
+      });
+      const data = await response.json();
+      if (response.ok) {
+        setIsLiked(data.liked);
+      } else {
+        console.log("Не удалось проверить наличие лайка");
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchLikeCreate = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/like/create', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment_id: comment._id, user_id: localStorage.getItem("userId") }),
+      });
+      if (response.ok) {
+        console.log("лайкнулось");
+        setLikesCount((prev) => prev + 1); // Увеличиваем количество лайков
+      } else {
+        const data = await response.json();
+        console.log(data.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const fetchLikeDelete = async () => {
+    try {
+      const response = await fetch('http://localhost:4000/api/like/delete', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ comment_id: comment._id, user_id: localStorage.getItem("userId") }),
+      });
+      if (response.ok) {
+        console.log("лайк убран");
+        setLikesCount((prev) => prev - 1); // Уменьшаем количество лайков
+      } else {
+        const data = await response.json();
+        console.log(data.error);
+      }
+    } catch (err) {
+      console.error(err);
+    }
+  };
+
+  const handleLike = () => {
+    if (isLiked) {
+      fetchLikeDelete();
+    } else {
+      fetchLikeCreate();
+    }
+    setIsLiked(!isLiked);
+  };
+
+  useEffect(() => {
+    fetchCheckLike();
+  }, []);
+
   const openModal = (imageUrl) => {
     setModalImageUrl(imageUrl);
     setIsModalOpen(true);
   };
 
-  // Закрыть модальное окно
   const closeModal = () => {
     setIsModalOpen(false);
     setModalImageUrl(null);
@@ -23,7 +93,6 @@ const Comment = ({ comment }) => {
       <div style={styles.date}>{comment.date}</div>
       <div style={styles.text}>{comment.text}</div>
 
-      {/* Если есть изображение, оно кликабельно для увеличения */}
       {comment.imageUrl && (
         <img
           src={comment.imageUrl}
@@ -34,22 +103,29 @@ const Comment = ({ comment }) => {
       )}
 
       <div style={styles.divLikes}>
-        <img src={like_icon} alt='like_icon' style={styles.likeIcon}></img>
-        <p style={styles.likeCount}>{comment.likes_count}</p>
+        <img
+          src={isLiked ? liked_icon : like_icon}
+          alt="like_icon"
+          style={styles.likeIcon}
+          onClick={handleLike}
+        />
+        <p style={styles.likeCount}>{likesCount}</p>
       </div>
 
-      {/* Модальное окно для увеличенного изображения */}
       {isModalOpen && (
         <div style={styles.modalOverlay} onClick={closeModal}>
           <div style={styles.modalContent} onClick={(e) => e.stopPropagation()}>
             <img src={modalImageUrl} alt="Enlarged" style={styles.modalImage} />
-            <span style={styles.closeIcon} onClick={closeModal}>✖</span>
+            <span style={styles.closeIcon} onClick={closeModal}>
+              ✖
+            </span>
           </div>
         </div>
       )}
     </div>
   );
-}
+};
+
 
 const styles = {
   commentContainer: {

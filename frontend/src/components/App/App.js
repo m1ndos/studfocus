@@ -7,7 +7,7 @@ import SignUp from '../SignUp/SignUp';
 import Main from '../Main/Main';
 import { Routes, Route, BrowserRouter } from 'react-router-dom';
 import { useEffect, useState } from 'react'; // Импортируем useEffect и useState
-import PrivateOffice from '../PrivateOffice/PrivateOffice';
+import Profile from '../Profile/Profile';
 import CreateQuestion from '../CreateQuestion/CreateQuestion';
 import QuestionPage from '../Question/QuestionPage';
 
@@ -31,7 +31,7 @@ function App() {
             <Route path="/signin" element={<SignIn userId={userId} setUserId={setUserId} />} />
             <Route path="/signup" element={<SignUp />} />
             <Route path="/create-question" element={<CreateQuestion />} />
-            <Route path="/private-office" element={<PrivateOffice userId={userId}/>} />
+            <Route path="/profile/:id" element={<Profile userId={userId}/>} />
             <Route path="/settings" element={<Settings/>} />
             <Route path="/password-change" element={<PasswordChange />} />
             <Route path="/question/:id" element={<QuestionPage userId={userId}/>}></Route>
