@@ -30,7 +30,7 @@ router.post('/api/user/registration', async (req, res) => {
 
         await newUser.save();
 
-        res.status(201).json({ message: 'Пользователь успешно зарегистрирован!' });
+        res.status(201).json({ message: 'Пользователь успешно зарегистрирован!', userId: newUser._id});
     } catch (error) {
         res.status(500).json({ message: 'Ошибка при регистрации пользователя', error: error.message });
     }

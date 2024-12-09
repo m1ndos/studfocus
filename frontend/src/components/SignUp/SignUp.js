@@ -1,6 +1,7 @@
 import React, { useState } from 'react';
+import { useNavigate } from 'react-router-dom';
 
-const SignUp = () => {
+const SignUp = ({ userId, setUserId }) => {
   // Состояния для хранения значений полей
   const [firstName, setFirstName] = useState('');
   const [lastName, setLastName] = useState('');
@@ -8,6 +9,8 @@ const SignUp = () => {
   const [password, setPassword] = useState('');
   const [confirmPassword, setConfirmPassword] = useState('');
   const [error, setError] = useState(''); // Состояние для хранения ошибки
+
+  const navigate = useNavigate();
 
   // Обработчик сабмита формы
   const handleSubmit = async (event) => {
@@ -44,7 +47,10 @@ const SignUp = () => {
       // Обработка ответа
       if (response.ok) {
         const data = await response.json();
-        console.log('Пользователь успешно зарегистрирован:', data);
+        localStorage.setItem('userId', data.userId);
+        setUserId(data.userId);
+        navigate("/profile/" + data.userId)
+        console.log('Пользователь успешно зарегистрирован:', data.userId);
         // Здесь можно сделать перенаправление или другую логику
       } else {
         const errorData = await response.json();
