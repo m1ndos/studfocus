@@ -77,4 +77,19 @@ router.post('/api/view/count', async (req, res) => {
     }
 });
 
+// GET запрос для получения общего количества просмотров
+router.get('/api/view/total', async (req, res) => {
+    try {
+        // Подсчитываем общее количество документов в коллекции View
+        const totalViews = await View.countDocuments();
+
+        // Возвращаем успешный ответ с общим числом просмотров
+        res.status(200).json({ totalViews });
+    } catch (error) {
+        console.error(error); // Логируем ошибку
+        res.status(500).json({ error: 'Internal server error' });
+    }
+});
+
+
 module.exports = router;

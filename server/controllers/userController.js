@@ -163,5 +163,19 @@ router.post('/api/user/change-password', async (req, res) => {
   }
 });
 
+// Обработчик GET-запроса для получения количества пользователей
+router.get('/api/user/count', async (req, res) => {
+    try {
+        // Используем метод `countDocuments` для подсчета пользователей
+        const userCount = await User.countDocuments();
+
+        res.status(200).json({ count: userCount });
+    } catch (error) {
+        console.error('Ошибка при подсчете пользователей:', error);
+        res.status(500).json({ message: 'Ошибка при подсчете пользователей', error: error.message });
+    }
+});
+
+
 
 module.exports = router;

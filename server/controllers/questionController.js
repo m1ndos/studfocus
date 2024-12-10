@@ -187,5 +187,19 @@ router.post('/api/question/get-by-id', async (req, res) => {
     }
 });
 
+// Обработчик для получения количества вопросов
+router.get('/api/questions/count', async (req, res) => {
+    try {
+        // Используем метод `countDocuments` для подсчета количества вопросов
+        const count = await Question.countDocuments();
+
+        res.status(200).json({ count });
+    } catch (error) {
+        console.error(error);
+        res.status(500).json({ message: 'Error retrieving question count', error });
+    }
+});
+
+
 
 module.exports = router;

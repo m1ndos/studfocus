@@ -10,6 +10,8 @@ import { useEffect, useState } from 'react'; // Импортируем useEffect
 import Profile from '../Profile/Profile';
 import CreateQuestion from '../CreateQuestion/CreateQuestion';
 import QuestionPage from '../Question/QuestionPage';
+import Stats from '../Stats/Stats';
+import Comment from '../Reusable/Comment';
 
 function App() {
   const [userId, setUserId] = useState(null); // Состояние для хранения userId
@@ -34,6 +36,8 @@ function App() {
             <Route path="/profile/:id" element={<Profile userId={userId}/>} />
             <Route path="/settings" element={<Settings/>} />
             <Route path="/password-change" element={<PasswordChange />} />
+            <Route path='/stats' element={<Stats/>}></Route>
+            <Route path='/comment/:id' element={<Comment/>}></Route>
             <Route path="/question/:id" element={<QuestionPage userId={userId}/>}></Route>
           </Routes>
         </div>

@@ -154,4 +154,27 @@ router.get('/api/comment/image/:id', async (req, res) => {
     }
 });
 
+// Обработчик для получения ID самого залайканного комментария
+router.get('/api/comment/most-liked', async (req, res) => {
+    try {
+        // Используем агрегирование для сортировки комментариев по лайкам в убывающем порядке
+        const mostLikedComment = await Comment.aggregate([
+            { $sort: { likes_count: -1 } }, // Сортируем по лайкам в убывающем порядке
+            { $limit: 1 }, // Ограничиваем результат одним самым залайканным комментарием
+            { $project: { _id: 1 } } // Возвращаем только ID комментария
+        ]);
+
+        if (mostLikedComment.length === 0) {
+            return res.status(404).json({ message: 'No comments found' });
+        }
+
+        // Отправляем ID самого залайканного комментария
+        res.status(200).json({ mostLikedCommentId: mostLikedComment[0]._id });
+    } catch (error) {
+        console.error('Error retrieving most liked comment:', error);
+        res.status(500).json({ message: 'Error retrieving most liked comment', error });
+    }
+});
+
+
 module.exports = router;
